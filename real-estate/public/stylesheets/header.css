@@ -1,0 +1,203 @@
+.header{
+    padding-top: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #858585;
+        height: 22px;
+        min-width: 980px;
+        position: relative;
+        z-index: 10;
+        display: block;
+}
+
+.header a{
+    position: relative;
+        float: left;
+        top:-6px;
+        margin-left: 20px;
+}
+
+
+.city{
+    margin-right: 12px;
+    margin-left: 10px;
+    margin-top: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    float: left;
+}
+
+.city p{
+    color: #fff;
+    background-color: #00ae66;
+    position: relative;
+    line-height: 20px;
+    width: 58px;
+    text-indent: 6px;
+}
+
+.city p:hover+ul{
+    display: block;
+}
+
+.city ul{
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 56px;
+    border: 1px solid #333;
+    background: #fff;
+    line-height: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-align: center;
+    top: 26px;
+    margin-top: -6px;
+    list-style: none;
+}
+
+.city ul a{
+    text-indent: -6px;
+    display: block;
+    text-align: left;
+    text-decoration: none;
+    color: #333;
+}
+
+.city ul:hover{
+    display: block;
+}
+
+.search{
+    float: left;
+}
+.search input{
+    display: inline-block;
+    height: 26px;
+}
+
+.search .btn{
+    width: 64px;
+        height: 28px;
+        background-color: #53b371;
+        vertical-align: middle;
+        border: 1px solid #2e8d56;
+             -webkit-box-sizing: content-box;
+             -moz-box-sizing: content-box;
+             box-sizing: content-box;
+             cursor: pointer;
+             text-align: center;
+             margin-left: -5px;
+}
+
+.search .btn i{
+    color: white;
+}
+
+.aside{
+    padding-left: 16px;
+    font-size: 12px;
+    float: left;
+}
+
+.aside .li{
+    float: left;
+    height: 26px;
+    width: 92px;
+    line-height: 26px;
+    border: 1px solid #ccc;
+    margin-right: 6px;
+    position: relative;
+    cursor: pointer;
+}
+
+.aside li span{
+    margin-left: 4px;
+}
+
+.aside li i{
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.aside li .drop-i{
+    position: absolute;
+    right: 6px;
+    top: 9px;
+    width: 12px;
+    height: 8px;
+}
+.aside ol li .drop-list{
+
+    border:1px solid #ccc;
+    max-height: 200px;
+    width:92px;
+    overflow: auto;
+
+}
+.aside ol .drop-list li:hover{
+    background-color: #E0E0E0;
+}
+
+
+.aside .li-btn{
+    margin-left: 5px;
+    border: none;
+}
+
+.aside .li-btn i{
+    margin-top: 7px;
+}
+
+.drop-list{
+    display: none;
+    position: absolute;
+    top: 26px;
+    left: -1px;
+    z-index: 1;
+    border: 1px solid #cccccc;
+    width: 100%;
+    background: #FFF;
+}
+
+.show{
+    display: block;
+}
+
+.drop-list .item{
+    color: #000000;
+    cursor: pointer;
+    padding-left: 5px;
+
+}
+
+.drop-list .clicked{
+    cursor: default;
+    background-color: transparent;
+    color: #53B371;
+}
+
+.user {
+    height: 100%;
+    font-size: 12px;
+    height: 26px;
+    line-height: 26px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.user i {
+    margin: 0 10px 0 10px;
+}
+.user span {
+    cursor: pointer;
+}
+.user .sign-in {
+    padding-right: 2px;
+}
+.user .sign-up {
+    padding-left: 2px;
+    margin-right: 10px;
+}

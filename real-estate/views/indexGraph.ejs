@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="/stylesheets/indexGraph.css">
+<!--scripts-->
+<script src="/javascripts/source/jquery.min.js"></script>
+<script src="/javascripts/source/highcharts.js"></script>
+<script src="/javascripts/source/exporting.js"></script>
+<script src="/javascripts/source/data.js"></script>
+<script src="javascripts/widget/indexGraph.js"></script>
+
+<div class="indexGraph">
+  <ol class="attribute-selector" data-chosen='0'>
+    <li class="chosen" value="0" id="price">房价</li>
+    <li value="1">房龄</li>
+    <li value="2">容积率</li>
+    <li value="3">建筑类型</li>
+    <li value="4">距商圈距离</li>
+  </ol>
+
+  <ol class="index-y-selector" data-chosen='0'>
+    <li class="chosen" value="0" id="plot_count" >小区数量</li>
+    <li value="1" id="avg_price">小区均价</li>
+  </ol>
+
+  <div class="attribute-filter">
+    <!--价格选项-->
+  	  <div class="selectorLine-price selectorLine hidden " data-value='0'>
+  	  	  <div class="sl-key">
+  	  	  	  <span>价格：</span>
+  	  	  </div>
+  	  	  <div class="sl-value">
+  	  	  	  <ol class="sl-value-list" name='price' data-price=''>
+  	  	  	  	<li data-value='0&10000'>0-1.0万</li>
+  	  	  	  	<li data-value='10000&15000'>1.0-1.5万</li>
+  	  	  	  	<li data-value='15000&20000'>1.5-2.0万</li>
+  	  	  	  	<li data-value='20000&25000'>2.0-2.5万</li>
+  	  	  	  	<li data-value='25000&30000'>2.5-3.0万</li>
+  	  	  	  	<li data-value='30000&35000'>3.0-3.5万</li>
+  	  	  	  	<li data-value='35000&40000'>3.5-4.0万</li>
+  	  	  	  	<li data-value='40000&45000'>4.0-4.5万</li>
+  	  	  	  	<li data-value='45000&50000'>4.5-5.0万</li>
+  	  	  	  	<li data-value='50000&1000000'>大于5.0万</li>
+  	  	  	  </ol>
+  	  	  </div>
+  	  </div>
+      <!--房龄选项-->
+      <div class="selectorLine-buildage selectorLine" data-value='1'>
+          <div class="sl-key">
+              <span>房龄：</span>
+          </div>
+          <div class="sl-value">
+              <ol class="sl-value-list" name='age' data-age=''>
+                <li data-value='0&5'>0-5年</li>
+                <li data-value='5&10'>5-10年</li>
+                <li data-value='10&15'>10-15年</li>
+                <li data-value='15&20'>15-20年</li>
+                <li data-value='20&25'>20-25年</li>
+                <li data-value='25&30'>25-30年</li>
+                <li data-value='30&1000'>30年以上</li>
+              </ol>
+          </div>
+      </div>
+      <!--容积率选项-->
+      <div class="selectorLine-ratio selectorLine" data-value='2'>
+          <div class="sl-key">
+              <span>容积率：</span>
+          </div>
+          <div class="sl-value">
+              <ol class="sl-value-list" name='plot_rate' data-plotrate=''>
+                <li data-value='0&1.0'>0-1.0</li>
+                <li data-value='1.0&1.5'>1.0-1.5</li>
+                <li data-value='1.5&2.0'>1.5-2.0</li>
+                <li data-value='2.0&2.5'>2.0-2.5</li>
+                <li data-value='2.5&3'>2.5-3.0</li>
+                <li data-value='3&3.5'>3.0-3.5</li>
+                <li data-value='3.5&4.0'>3.5-4.0</li>
+                <li data-value='4.0&4.5'>4.0-4.5</li>
+                <li data-value='4.5&5.0'>4.5-5.0</li>
+                <li data-value='5.0&20'>大于5.0</li>
+              </ul>
+          </div>
+      </div>
+      <!--建筑类型选项-->
+      <div class="selectorLine-type selectorLine" data-value='3'>
+          <div class="sl-key">
+              <span>建筑类型：</span>
+          </div>
+          <div class="sl-value">
+              <ol class="sl-value-list" name='build_type'>
+                <li>板房</li>
+                <li>小高层</li>
+                <li>高层</li>
+                <li>公寓</li>
+                <li>联排别墅</li>
+                <li>双排别墅</li>
+                <li>花园洋房</li>
+              </ol>
+          </div>
+      </div>
+      <!--距商圈距离选项-->
+      <div class="selectorLine-distance selectorLine" data-value='4'>
+          <div class="sl-key">
+              <span>距商圈距离：</span>
+          </div>
+          <div class="sl-value">
+              <ol class="sl-value-list" name='b_distance'>
+                <li>0-500米</li>
+                <li>500-1000米</li>
+                <li>1000-1500米</li>
+                <li>1500-2000米</li>
+                <li>2000-2500米</li>
+                <li>2500-3000米</li>
+                <li>3000米以上</li>
+              </ol>
+          </div>
+      </div>
+  </div>
+
+  <div id="graph-container"></div>
+</div>

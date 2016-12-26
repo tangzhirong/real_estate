@@ -29,8 +29,8 @@
 		me.x = opts.x;
 		me.y = opts.y;
 		me.zoom = opts.zoom;
-		
-		
+
+
 		initMap(me.x,me.y,me.zoom);//创建和初始化地图
 
 		 //创建和初始化地图函数：
@@ -39,16 +39,16 @@
         			setMapEvent();//设置地图事件
         			addMapControl();//向地图添加控件
     		}
-    
+
     		//创建地图函数：
     		function createMap(x,y,zoom){
-       			var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图     			
+       			var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
         			var point = new BMap.Point(x,y);//定义一个中心点坐标
         			map.centerAndZoom(point,zoom);//设定地图的中心点和坐标并将地图显示在地图容器中
         			window.map = map;//将map变量存储在全局，window对象表示浏览器中打开的窗口
-        			 			
+
    		 }
-    
+
     		//地图事件设置函数：
     		function setMapEvent(){
 		        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
@@ -56,7 +56,7 @@
 		        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
 		        map.enableKeyboard();//启用键盘上下左右键移动地图
     		}
-    
+
 		//地图控件添加函数：
 		function addMapControl(){
 		        //向地图中添加缩放控件
@@ -70,10 +70,43 @@
 			map.addControl(ctrl_sca);
 		 }
 
+		 me.pointToDistrict = function(district,level){
+		 	var opt = {
+		 		isChosenOne:true,
+		 	}
+		 	getBoundary(district,level,opt);
+		 	// var bdary = new BMap.Boundary();
+		  //       	bdary.get('北京市'+district, function(rs){       //获取行政区域
+		  //       		//计算区域中心点位置
+			 //                var bdary_arr = rs.boundaries[0].split(';');
+			 //                var lng_arr = [];
+			 //                var lat_arr = [];
+			 //                for(var j=0;j<bdary_arr.length;j++){
+			 //                    var lng = parseFloat(bdary_arr[j].split(',')[0]);
+			 //                    var lat = parseFloat(bdary_arr[j].split(',')[1]);
+			 //                    lng_arr.push(lng);
+			 //                    lat_arr.push(lat);
+			 //                }
+			 //                var max_lng =Math.max.apply(null, lng_arr);
+			 //                var min_lng = Math.min.apply(null, lng_arr);
+			 //                var max_lat = Math.max.apply(null, lat_arr);
+			 //                var min_lat = Math.min.apply(null, lat_arr);
+
+			 //                //中心点经纬度
+			 //                var avg_lng = (max_lng+min_lng)/2;
+			 //                var avg_lat = (max_lat+min_lat)/2;
+
+			 //                var point = new BMap.Point(avg_lng,avg_lat);
+			 //                map.centerAndZoom(point,13);//设定地图的中心点和坐标并将地图显示在地图容器中
+		  //       	})
+		 }
 
 		//地图更新的方法
 		me.init = function(){
 			var mapOverlays = map.getOverlays();
+			var opt = {
+				isChosenOne:false,
+			};
 			for(var i=0;i<mapOverlays.length;i++){
 				console.log(mapOverlays[i].constructor.name);
 				if(mapOverlays[i].constructor.name ==  'Bc' ){
@@ -85,105 +118,74 @@
 			 if(me.level == 'province'){
 
 			 	var districtArr = [
-				    '东城区',
-				    '西城区',
-				     '朝阳区',
-				     '海淀区',
-				     '丰台区',
-				    '石景山区',
-				     '门头沟区',
-				     '房山区',
-				    '通州区',
-				    '顺义区',
-				    '昌平区',
-				    '大兴区',
-				    '怀柔区',
-				     '平谷区',
-				    '密云区',
-				    '亦庄区',
-				    '门头沟区'
+				    '东城',
+				    '西城',
+				     '朝阳',
+				     '海淀',
+				     '丰台',
+				    '石景山',
+				     '门头沟',
+				     '房山',
+				    '通州',
+				    '顺义',
+				    '昌平',
+				    '大兴',
+				    '怀柔',
+				     '平谷',
+				    '密云',
+				    '亦庄',
+				    '门头沟'
     				];
     				//渲染各行政区overlay
-				for (var i = 0; i < districtArr.length; i++) {
-					
-			       		getBoundary(districtArr[i],'province');
+				for (var i = 0; i < districtArr.length; i++) {					
+			       		getBoundary(districtArr[i],'province',opt);
 				}
+				
 			}else if(me.level == 'district'){    //如果当前地图层级为某行政区
 				var point = new BMap.Point(me.x,me.y);//定义一个中心点坐标
 				map.centerAndZoom(point,me.zoom);
-
+				
 				 // var circle1 = new BMap.Circle(point,2000,{strokeColor:"rgba(75,179,119)", strokeWeight:2, strokeOpacity:0.5}); //创建圆
 				 // map.addOverlay(circle1);
-				
+
 				//获取该行政区的所有商圈
-				// $.ajax({
-				//              type: "GET",
-				//              url: "",   
-				//              data: {currentArea:me.currentArea},
-				//              dataType: "json",
-				//              success: function(data){
-				//           		//rewrite getBoundry    
-				//              },
-				//              error:function(msg){
-				//              	console.log(msg);
-				//              }
-    //     			 	});
-
-    			/******************just for test!!******************/
-    				var business = [{
-    					name:'圆明园',
-    					lng:116.309681,
-    					lat:39.999495,
-    					price:6.3,
-    					blocknum:500,
-    				},{
-    					name:'中关村',
-    					lng:116.316483,
-    					lat:39.983845,
-    					price:6.8,
-    					blocknum:588,
-    				}];
-    				for (var i = 0; i < business.length; i++) {
-			       		getBoundary(business[i],'district');
-				}
-
+				 $.ajax({
+		                                       type: "GET",
+		                                       url: "/getBusinessByDistrict/"+me.currentArea,
+		                                       dataType: "json",
+		                                       success: function(data){
+		                                       	console.log(data.businessList);
+		                                        	 for(var i=0;i<data.businessList.length;i++){		                                        	 
+		                                        	 	getBoundary(data.businessList[i],'district',opt);
+		                                        	 }
+		                                       },
+		                                       error:function(msg){
+		                                         console.log(msg);
+		                                       }
+                            		});
 			}else{
 				//获取该商圈的所有小区
-				// $.ajax({
-				//              type: "GET",
-				//              url: "",   
-				//              data: {currentArea:me.currentArea},
-				//              dataType: "json",
-				//              success: function(data){
-				//           		//rewrite getBoundry    
-				//              },
-				//              error:function(msg){
-				//              	console.log(msg);
-				//              }
-    //     			 	});
-    				var point = new BMap.Point(me.x,me.y);//定义一个中心点坐标
-				map.centerAndZoom(point,me.zoom);
-
-				var blocks = [{
-    					name:'北河沿',
-    					lng:116.202123,
-    					lat:39.990256,
-    					price:6.3,
-    					housenum:10
-    				},{
-    					name:'燕北园',
-    					lng:116.312569,
-    					lat:39.982963,
-    					price:6.8,
-    					housenum:25
-    				}];
-    				for (var i = 0; i < blocks.length; i++) {
-			       		getBoundary(blocks[i],'business');       //商圈内部的小区
-				}
-
+				$.ajax({
+		                                       type: "GET",
+		                                       url: "/getBlocksByBusiness/"+me.currentArea,
+		                                       dataType: "json",
+		                                       success: function(data){
+		                                        console.log(data.blocklist.length);
+		                                                $('.blockList .b-hd1_i').text(data.blocklist.length);
+		                                                var point = new BMap.Point(me.x,me.y);//定义一个中心点坐标
+					         map.centerAndZoom(point,me.zoom);
+		                                               for(var i=0;i<data.blocklist.length;i++){		
+		                                               	console.log(data.blocklist[i]);	                                               		                                               	
+		                                                   getBoundary(data.blocklist[i],'business',opt);       //商圈内部的小区
+		                                               }
+		                                       },
+		                                       error:function(msg){
+		                                         console.log(msg);
+		                                       }
+                            		});
 			}
-			
-			     
+
+
 		};
 
 		//Heatmap
@@ -197,7 +199,7 @@
 
 			  //创建热力图实例
 			  heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20});
-			  
+
 
 			    //是否显示热力图
 			    function openHeatmap(){
@@ -219,7 +221,7 @@
 				      var colors = document.querySelectorAll("input[type='color']");
 				      colors = [].slice.call(colors,0);
 				      colors.forEach(function(ele){
-				      gradient[ele.getAttribute("data-key")] = ele.value; 
+				      gradient[ele.getAttribute("data-key")] = ele.value;
 				      });
 				       heatmapOverlay.setOptions({"gradient":gradient});
 			    }
@@ -239,7 +241,7 @@
 				     //         data: {currentArea:me.currentArea,heatmap_type:opts.heatmap_type},
 				     //         dataType: "json",
 				     //         success: function(data){
-				     //      		//render data and add heatmap overlay       
+				     //      		//render data and add heatmap overlay
 				     //         },
 				     //         error:function(msg){
 				     //         	console.log(msg);
@@ -339,11 +341,11 @@
 				    {"lng":116.424579,"lat":39.914987,"count":57},
 				    {"lng":116.42076,"lat":39.915251,"count":70},
 				    {"lng":116.425867,"lat":39.918989,"count":8}];
-   
-			 
+
+
 				  map.addOverlay(heatmapOverlay);
 				  heatmapOverlay.setDataSet({data:points,max:100});
-				  
+
 				  // openHeatmap();
 			}else if(me.heatmap_type == 'paynum'){
 				var points =[
@@ -358,12 +360,12 @@
 				    {"lng":116.422039,"lat":39.91782,"count":11},
 				    {"lng":116.41387,"lat":39.917253,"count":7},
 				    {"lng":116.41773,"lat":39.919426,"count":42}];
-				    
-   
-			 
+
+
+
 				  map.addOverlay(heatmapOverlay);
 				  heatmapOverlay.setDataSet({data:points,max:100});
-				   
+
 			}else if(me.heatmap_type == 'potential'){
 				var points =[
 				    {"lng":116.418261,"lat":39.921984,"count":50},
@@ -383,24 +385,24 @@
 				    {"lng":116.420682,"lat":39.91463,"count":60},
 				    {"lng":116.415424,"lat":39.924675,"count":8},
 				    {"lng":116.419242,"lat":39.914509,"count":15}];
-				  
-			 
+
+
 				  map.addOverlay(heatmapOverlay);
 				  heatmapOverlay.setDataSet({data:points,max:100});
-				  
+
 			}
 			   return heatmapOverlay;
 		}
 
-		
+
 
 		 //绘制该区的边界Boundary和房价信息Label
-		    function getBoundary(district,level){ 
+		    function getBoundary(district,level,opt){
 		    	// console.log(district);
 		    	if(level == 'province'){
 		    		var bdary = new BMap.Boundary();
-		        		bdary.get('北京市'+district, function(rs){       //获取行政区域
-			            // map.clearOverlays();        //清除地图覆盖物       
+		        		bdary.get('北京市'+district+'区', function(rs){       //获取行政区域
+			            // map.clearOverlays();        //清除地图覆盖物
 				            var count = rs.boundaries.length; //行政区域的点有多少个
 				            if (count === 0) {
 				                alert(district+'未能获取当前输入行政区域');
@@ -437,7 +439,11 @@
 				                var avg_lat = (max_lat+min_lat)/2;
 
 				                var point = new BMap.Point(avg_lng,avg_lat);
-
+				                
+				                if(opt.isChosenOne){
+				                	map.centerAndZoom(point,13);//设定地图的中心点和坐标并将地图显示在地图容器中
+				                }
+				                
 				                //设置颜色
 				                var circleColor = 'rgb(75,179,119)';
 				                var changecColor = 'rgb(227,74,76)';
@@ -467,22 +473,56 @@
 				                //点击圆后，打开该区级别的地图
 				                circle.ply.addEventListener('click',function(){
 				                    //清空地图覆盖物
-				                    map.clearOverlays();	
+				                    map.clearOverlays();
 				                    // map.centerAndZoom(new BMap.Point(avg_lng,avg_lat), 12.5);
-				                    // map.enableScrollWheelZoom();				      
+				                    // map.enableScrollWheelZoom();
 				                    me.level = 'district';
 				                    // console.log(district.lng);
 				                    me.x = avg_lng;
 				                    me.y = avg_lat;
-				                    me.zoom = 12.5;
-				                    console.log(me);
+				                    me.zoom = 13;
+				                    me.currentArea = district;
+				                    console.log(me.currentArea);
 
 				                    me.init();
 				                    // me.heatmap();
 
+					        $('.b-container .b-content').children().each(function(){
+					          $(this).remove();
+					        })
+					        $('.aside #district_name').text(district);
+					        //新添加
+					        $(this).addClass('clicked');
+					        $(this).siblings().removeClass('clicked');
+					        
+
+					        //更新blocklist区域名和均价
+					        $('.i-card-name').text(district);
+					        //更新indexGraph标题
+        					        $('.indexGraph .total span').text(district);
+        					        //取消滚动加载事件
+                         				         $('.b-container').unbind('scroll');
+        					       
+        					        $.ajax({
+					                     type: "GET",
+					                     url: "/getBlocks/"+district,
+					                     dataType: "json",
+					                     success: function(data){					                     	
+					                              $('.blockList .b-hd1_i').text(data.blocklist.length);
+					                             for(var i=0;i<data.blocklist.length;i++){
+					                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info ">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+					                                    $('.b-content').append(block_item);
+					                             }
+					                     },
+					                     error:function(msg){
+					                       console.log(msg);
+					                     }
+          					        });
 				                });
 				                // console.log("province:"+map);
-				                map.addOverlay(circle);     
+				                map.addOverlay(circle);
 
 
 
@@ -493,7 +533,7 @@
 					         //     data: {district_name:district,select_opts:opts},
 					         //     dataType: "json",
 					         //     success: function(data){
-					         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);       
+					         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);
 					         //     },
 					         //     error:function(msg){
 					         //     	console.log(msg);
@@ -504,12 +544,16 @@
 				                addlabel(point,district+'<br/>7.3万<br/>8864套');
 
 
-		           		 }    
-		            // map.setViewport(pointArray);    //调整视野   
-		        });   
+		           		 }
+		            // map.setViewport(pointArray);    //调整视野
+		        });
 		    }else if(level == 'district'){
 		    		  // console.log('sss'+district.lng);
 		    		  var point = new BMap.Point(district.lng,district.lat);
+
+		    		  if(opt.isChosenOne){
+			                	map.centerAndZoom(point,14);//设定地图的中心点和坐标并将地图显示在地图容器中
+			                }
 
 			                //设置颜色
 			                var circleColor = 'rgb(75,179,119)';
@@ -520,35 +564,16 @@
 			                // var swPoint =  ply.getBounds().getSouthWest();
 			                // var nePoint =  ply.getBounds().getNorthEast() ;
 			                // var radius = Math.sqrt((nePoint.lat-swPoint.lat)*(nePoint.lng-swPoint.lng));
-			                var circle = new BMap.Circle(point,2000,{strokeColor:"rgba(75,179,119)", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+			                var circle = new BMap.Circle(point,1000,{strokeColor:"rgba(75,179,119)", strokeWeight:2, strokeOpacity:0.5}); //创建圆
 
-			         		
+
 			                circle.setFillColor(circleColor);
-			                 
-			                //添加鼠标事件
-			                circle.addEventListener('mouseover',function(){
-			                    this.setFillColor(changecColor);			            
-			                });
-			                circle.addEventListener('mouseout',function(){
-			                    this.setFillColor(circleColor);			                    
-			                });
-			                //点击圆后，打开该区级别的地图
-			                circle.addEventListener('click',function(){
-			                    //清空地图覆盖物
-			                    map.clearOverlays();	
-			                    // map.centerAndZoom(new BMap.Point(district.lng,district.lat), 12.5);
-			                    // map.enableScrollWheelZoom();	
-			                    me.level = 'business';
-				                   
-			                    me.x = district.lng;
-			                    me.y = district.lat;
-			                    me.zoom = 12.5;			                    
-	                  		       me.init();
-			                });
+
+			               
 			                // console.log("district:"+map);
-			                console.log('ssssssssssasasas');
-			                 map.addOverlay(circle);  
-			                 console.log('sadgdfhfdhgfhf');
+			                
+			                 map.addOverlay(circle);
+			                 
 
 
 			                //ajax获取该行政区小区数据
@@ -558,7 +583,7 @@
 				         //     data: {district_name:district,select_opts:opts},
 				         //     dataType: "json",
 				         //     success: function(data){
-				         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);       
+				         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);
 				         //     },
 				         //     error:function(msg){
 				         //     	console.log(msg);
@@ -566,14 +591,77 @@
 	        			 // });
 
 	        			 /*****************just for test!!!*****************/
-			                addlabel(point,district.name+'<br/>'+district.price+'<br/>'+district.blocknum+'套');
-			               
+			                var label = addlabel(point,'<br/>'+district.name+'<br/>');
+
+			                 //添加鼠标事件
+			                circle.addEventListener('mouseover',function(){
+			                    this.setFillColor(changecColor);
+			                     label.setStyle({
+			            		color : "red",			           
+		        		        });
+			                });
+			                circle.addEventListener('mouseout',function(){
+			                    this.setFillColor(circleColor);
+			                    label.setStyle({
+			            		color : "white",			           
+		        		        });
+			                });
+			                //点击圆后，打开该区级别的地图
+			                circle.addEventListener('click',function(){
+			                    //清空地图覆盖物
+			                    map.clearOverlays();
+			                    // map.centerAndZoom(new BMap.Point(district.lng,district.lat), 12.5);
+			                    // map.enableScrollWheelZoom();
+			                    me.level = 'business';
+
+			                    me.x = district.lng;
+			                    me.y = district.lat;
+			                    me.zoom = 16;
+			                    me.currentArea = district.name;
+	                  		       me.init();
+
+	                  		       $('.b-container .b-content').children().each(function(){
+			                            $(this).remove();
+			                     })
+		                                 $('.aside #business_name').text(district.name);
+		                                 //新添加
+		                                 $(this).addClass('clicked');
+		                                 $(this).siblings().removeClass('clicked');
+		                          
+		                                 //更新blocklist区域名和均价
+		                                 $('.i-card-name').text(district.name);
+		                                 //取消滚动加载事件
+                         		                    $('.b-container').unbind('scroll');
+                         		                    //更新indexGraph标题
+        			                    $('.indexGraph .total span').text(district.name);
+
+		                                 $.ajax({
+		                                       type: "GET",
+		                                       url: "/getBlocksByBusiness/"+district.name,
+		                                       dataType: "json",
+		                                       success: function(data){
+		                                        console.log(data.blocklist.length);
+		                                                $('.blockList .b-hd1_i').text(data.blocklist.length);
+		                                               for(var i=0;i<data.blocklist.length;i++){
+		                                                     var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info ">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+		                                                      $('.b-content').append(block_item);
+		                                               }
+		                                       },
+		                                       error:function(msg){
+		                                         console.log(msg);
+		                                       }
+                            		    });
+
+			                });
+
 		   	}else{
 		   		// console.log('sss'+district.lng);
-		   		console.log(district.lng,district.lat);
+		   		console.log(district.title+":"+district.lng+","+district.lat);
 		    		  var point = new BMap.Point(district.lng,district.lat);
 
-			     
+
 
 			                //计算区域面积，估算圆半径,绘制房价信息圆
 			                // var swPoint =  ply.getBounds().getSouthWest();
@@ -583,7 +671,7 @@
 					 position : point,    // 指定文本标注所在的地理位置
 					 offset   : new BMap.Size(-50, -10)    //设置文本偏移量
 				     };
-					var label = new BMap.Label(district.name, opts);  // 创建文本标注对象
+					var label = new BMap.Label(district.title, opts);  // 创建文本标注对象
 					label.setStyle({
 						color : "#FFF",
 						backgroundColor:'#53b371',//文本背景色
@@ -593,7 +681,7 @@
 						lineHeight : "20px",
 						fontFamily:'微软雅黑'
 				  	});
-				  	var label_out = new BMap.Label(district.price+'万 '+district.housenum+'套', opts);  // 创建文本标注对象
+				  	var label_out = new BMap.Label(district.unit_price+'元/平方'+district.total_houses+'套', opts);  // 创建文本标注对象
 			                	label_out.setStyle({
 						color : "#FFF",
 						backgroundColor:'#53b371',//文本背景色
@@ -604,31 +692,31 @@
 						fontFamily:'微软雅黑'
 				  	});
 			                	label_out.setOffset(new BMap.Size(-5, -10));
-			                 
+
 			                //添加鼠标事件
 			                label.addEventListener('mouseover',function(){
 			                    	this.setStyle({
 			                    		backgroundColor:'#e4393c'
-			                    	})	            
+			                    	})
 			                    	map.addOverlay(label_out);
 
 			                });
 			                label.addEventListener('mouseout',function(){
 			                    	this.setStyle({
 			                    		backgroundColor:'#53b371'
-			                    	})	
-			                    	map.removeOverlay(label_out);		                    
+			                    	})
+			                    	map.removeOverlay(label_out);
 			                });
 			                //点击圆后，打开该区级别的地图
 			                label.addEventListener('click',function(){
-			                    	
+
 			                    //弹出右侧小区详情栏
-			                    
+
 			                });
 			                // console.log("district:"+map);
-			               
-			                 map.addOverlay(label);  
-			                
+
+			                 map.addOverlay(label);
+
 
 
 			                //ajax获取该行政区小区数据
@@ -638,7 +726,7 @@
 				         //     data: {district_name:district,select_opts:opts},
 				         //     dataType: "json",
 				         //     success: function(data){
-				         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);       
+				         //  		addlabel(point,district+'<br/>'+data.price+'<br/>'+data.blocknum);
 				         //     },
 				         //     error:function(msg){
 				         //     	console.log(msg);
@@ -646,7 +734,7 @@
 	        			 // });
 
 	        			 /*****************just for test!!!*****************/
-			                
+
 		   	}
 		}
 
@@ -668,11 +756,86 @@
 			            background:"rgba(75,179,119,0)"
 		        	});
 		             map.addOverlay(label);
-		    }     
+		             return label;
+		    }
+
+		    function addBlockLabel(blockInfo){
+		    	var point = new BMap.Point(blockInfo.lng,blockInfo.lat);   		    	
+		             var opts = {
+				 position : point,    // 指定文本标注所在的地理位置
+				 offset   : new BMap.Size(-50, -10)    //设置文本偏移量
+			};
+			var label = new BMap.Label(blockInfo.title, opts);  // 创建文本标注对象
+			label.setStyle({
+				color : "#FFF",
+				backgroundColor:'#2973b3',//文本背景色
+				borderColor:'#2973b3',//文本框边框色
+				fontSize : "14px",
+				height : "20px",
+				lineHeight : "20px",
+				fontFamily:'微软雅黑'
+		  	});
+		  	var label_out = new BMap.Label(blockInfo.unit_price+'元/平方'+blockInfo.house_num+'套', opts);  // 创建文本标注对象
+	                	label_out.setStyle({
+				// color : "",
+				backgroundColor:'white',//文本背景色
+				borderColor:'white',//文本框边框色
+				fontSize : "14px",
+				height : "20px",
+				lineHeight : "20px",
+				fontFamily:'微软雅黑'
+		  	});
+	                	label_out.setOffset(new BMap.Size(0, 0));
+	                	 //添加鼠标事件
+		                label.addEventListener('mouseover',function(){
+		                    	this.setStyle({
+		                    		backgroundColor:'red',
+		                    		borderColor:"red",
+		                    	})
+		                    	map.addOverlay(label_out);
+
+		                });
+		                label.addEventListener('mouseout',function(){
+		                    	this.setStyle({
+		                    		backgroundColor:'#2973b3',
+		                    		borderColor:'#2973b3',
+		                    	})
+		                    	map.removeOverlay(label_out);
+		                });
+		                //点击圆后，打开该区级别的地图
+		                label.addEventListener('click',function(){
+
+		                    //弹出右侧小区详情栏
+
+		                });
+	                	map.addOverlay(label);
+		    }
+
+				// //在地图上呢添加小区
+				// function addMarker(lng,lat) {
+				// 	var point = new BMap.Point(lng,lat);
+				// 	var marker = new BMap.Marker(point);
+				// 	map.addOverlay(marker);
+				// 	marker.addEventListener("click",getAttr);
+				// 	function getAttr(){
+				// 		var p = marker.getPosition();       //获取marker的位置
+				// 		alert("marker的位置是" + p.lng + "," + p.lat);
+				// 	}
+				// }
+
+				me.updateMarker = function(pointArray){
+					for (var i = 0; i < pointArray.length; i++) {
+						addBlockLabel(pointArray[i]);
+						if(i == pointArray.length-1){
+							var point = new BMap.Point(pointArray[i].lng,pointArray[i].lat);
+							// me.clear();
+							map.centerAndZoom(point,16);//设定地图的中心点和坐标并将地图显示在地图容器中
+						}
+					}
+				},
+				me.clear = function(){
+					map.clearOverlays();
+				}
    	return this;
    }
 })(jQuery);
-
-
-   
-    

@@ -16,3 +16,16 @@ ol li{
 	width: 100%;
 	position: relative;
 }
+
+
+footer{
+    background: #fff;
+    padding: 15px;
+    color: #7A7676;
+    font-size: 14px;
+    position: absolute;
+    top: 1513px;
+    width: 100%;
+    border-top: 1px solid #eff0f4;
+    text-align: center;
+}

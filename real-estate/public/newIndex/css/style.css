@@ -203,8 +203,12 @@ hr {
 }
 
 .logo {
-    padding-top: 5px;
     height: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    color: #65cea7;
+    text-align: center;
+    padding-right: 8px;
 }
 
 .logo a {

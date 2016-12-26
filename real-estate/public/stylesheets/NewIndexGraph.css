@@ -1,0 +1,69 @@
+.NewIndexGraph{
+	height: auto;
+	margin-left: 800px;
+}
+
+.index-graph-title{
+	height: 37px;
+	line-height: 37px;
+	background-color: rgb(103, 151, 142);
+	border: 1px solid rgb(233,236,241);
+}
+
+.index-graph-title{
+	padding-left: 10px;
+	font-size: 16px;
+	color:white;
+
+}
+
+table{
+	width: 100%;
+}
+
+table tbody tr td{
+	padding-left: 10px;
+}
+
+.table-title{
+	color: rgb(40,40,40);
+	background-color: rgb(255,255,255);
+	height: 27px;
+	font-size: 15px;
+	border-bottom: 1px solid rgb(233,236,241);
+}
+
+.table-title td div{
+	width: 88px;
+
+}
+.table-context{
+	color: rgb(40,40,40);
+	background-color: rgb(255,255,255);
+    height: 27px;
+}
+
+.table-context td div{
+	width: 88px;
+}
+
+.table-context-row1{
+	background-color: rgb(242,246,249);
+}
+
+.table-context-row3{
+	background-color: rgb(242,246,249);
+}
+
+.table-context-row5{
+	background-color: rgb(242,246,249);
+}
+
+#new-graph-container{
+	border-bottom: 1px solid rgb(233,236,241);
+	width: 100%;
+	height: 300px;
+}
+.highcharts-container{
+	width: 100%;
+}

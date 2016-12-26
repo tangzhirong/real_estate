@@ -27,18 +27,19 @@
 </head>
 
 <body class="sticky-header">
-<%- include('areaMap'); %>
 <section>
     <!-- left side start-->
     <div class="left-side sticky-left-side">
 
         <!--logo and iconic logo start-->
         <div class="logo">
-            <a href=""><img src="images/logo.png" alt=""></a>
+        房地产大数据分析平台
+           <!--  <a href=""><img src="images/logo.png" alt=""></a> -->
         </div>
 
         <div class="logo-icon text-center">
-            <a href="index.html"><img src="images/logo.png" alt=""></a>
+        
+            <a href=""><img src="images/logo.png" alt=""></a>
         </div>
         <!--logo and iconic logo end-->
 
@@ -47,7 +48,7 @@
             <!-- visible to small devices only -->
             <div class="visible-xs hidden-sm hidden-md hidden-lg">
                 <div class="media logged-user">
-                    <img alt="" src="images/photos/user-avatar.png" class="media-object">
+                    <img alt="" src="images/user1.png" class="media-object">
                     <div class="media-body">
                         <h4><a href="#">John Doe</a></h4>
                         <span>"Hello There..."</span>
@@ -67,13 +68,13 @@
                 <li class="active"><a href="index.html"><i class="fa fa-home"></i> <span>首页</span></a></li>
                 <li class="menu-list"><a href=""><i class="fa fa-laptop"></i> <span>图表统计</span></a>
                     <ul class="sub-menu-list">
-                        <li><a href="blank_page.html"> 1</a></li>
-                        <li><a href="boxed_view.html"> 2</a></li>
-                        <li><a href="leftmenu_collapsed_view.html"> 3</a></li>
-                        <li><a href="horizontal_menu.html"> 4</a></li>
-
+                        <li><a href=""> 信息图</a></li>
+                        <li><a href=""> 复合图</a></li>
+                        <li><a href=""> 区域地图</a></li>
+                        <li><a href=""> 地铁地图</a></li>   
                     </ul>
                 </li>
+                <li ><a href=""><i class="fa fa-home"></i> <span>报表展示</span></a></li>
                
 
             </ul>
@@ -105,8 +106,8 @@
                     
                     <li>
                         <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <img src="images/photos/user-avatar.png" alt="" />
-                            John Doe
+                            <img src="images/user1.png" alt="" />
+                            yun
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
@@ -122,7 +123,8 @@
 
         </div>
         <!-- header section end-->
-
+        <%- include('indexMap'); %>
+        <%- include('NewIndexGraph');%>
         
     </div>
     <!-- main content end-->
@@ -143,31 +145,171 @@
 
 </body>
 </html>
-<script type="text/javascript" src="/javascripts/widget/areaMap.js"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+<script type="text/javascript" src="/javascripts/source/highmaps.js"></script>
+<script type="text/javascript" src="/javascripts/source/mapData.js"></script>
+<script type="text/javascript" src="/javascripts/source/drilldown.js"></script>
+<script type="text/javascript" src="/javascripts/source/chinaMap.js"></script>
 <script type="text/javascript">
 
-$(document).ready(function(){
-    var areaMap =  $("#dituContent").areaMap({
-                level:'province'
-          });
-          areaMap.init();
-          var overlay = areaMap.heatmap();
+$(function () {
 
-          $('.li-item').on('click',function(){
-            $(this).children().addClass('fa fa-check');
-            $(this).siblings().each(function(){
-                $(this).children().removeClass('fa fa-check');
-            });
-            var heatmap_type = $(this).data('val');
-            areaMap.heatmap_type = heatmap_type;
-            map.removeOverlay(overlay);
-            overlay = areaMap.heatmap();
+    // $.ajax({
+    //                  type: "GET",
+    //                  url: "/test",                     
+    //                  dataType: "json",
+    //                  success: function(data){
+    //                             for(var i in data.blocklist){
+    //                                console.log(data.blocklist[i][0].title);
+    //                             }
+    //                  },
+    //                  error:function(msg){
+    //                    console.log(msg);
+    //                  }
+    //       });
 
-           areaMap.init();
 
-         })
-})
+    Highcharts.setOptions({
+        lang:{
+            drillUpText:"返回 > {series.name}"
+        }
+    });
+    var data = Highcharts.geojson(Highcharts.maps['countries/cn/custom/cn-all-china']),small = $('#indexMap').width() < 400;
+    // 给城市设置随机数据
+    $.each(data, function (i) {
+        this.drilldown = this.properties['drill-key'];
+        this.value = i;
+    });
+    //初始化地图
+    $('#indexMap').highcharts('Map', {
+        chart : {
+            events: {
+                drilldown: function (e) {
+                    if (!e.seriesOptions) {
+                        var chart = this;                             
+                        var cname=e.point.properties["cn-name"];
+                       
+                        /****************更新右侧图表组件******************/
+                         $('.city-name').text(cname);
+
+
+                        chart.showLoading('<i class="icon-spinner icon-spin icon-3x"></i>');
+                        // 加载城市数据
+                        $.ajax({
+                            type: "GET",
+                            url: "http://data.hcharts.cn/jsonp.php?filename=GeoMap/json/"+ e.point.drilldown+".geo.json",
+                            contentType: "application/json; charset=utf-8",
+                            dataType:'jsonp',
+                            crossDomain: true,
+                            success: function(json) {
+                                data = Highcharts.geojson(json);
+                                $.each(data, function (i) {
+                                    this.value = i;
+                                });
+                                chart.hideLoading();
+                                console.log(data);
+                                chart.addSeriesAsDrilldown(e.point, {
+                                    name: e.point.name,
+                                    data: data,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}'
+                                    },
+                                    cursor:'pointer',
+                                    events:{
+                                        click:function(e){
+                                            $('.city-name').text(e.point.name);
+                                            location.href = '/beijing';
+                                             /****************更新右侧图表组件******************/
+
+
+
+                                        }
+                                    }
+                                });
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                            }
+                        });
+                    }
+
+
+                    this.setTitle(null, { text: cname });
+                },
+                drillup: function () {
+                    this.setTitle(null, { text: '中国' });
+                }
+            }
+        },
+        credits:{
+            href:"http://www.peng8.net/",
+            text:"www.peng8.net"
+        },
+        title : {
+            text : '中国地图'
+        },
+        subtitle: {
+            text: '中国',
+            floating: true,
+            align: 'right',
+            y: 50,
+            style: {
+                fontSize: '16px'
+            }
+        },
+        legend: small ? {} : {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        //tooltip:{
+        //pointFormat:"{point.properties.cn-name}:{point.value}"
+        //},
+        colorAxis: {
+            min: 0,
+            minColor: '#E6E7E8',
+            maxColor: '#005645'
+        },
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+        plotOptions: {
+            map: {
+                states: {
+                    hover: {
+                        color: '#EEDD66'
+                    }
+                }
+            }
+        },
+        series : [{
+            data : data,
+            name: '中国',
+            dataLabels: {
+                enabled: true,
+                format: '{point.properties.cn-name}'    
+            }
+        }],
+        drilldown: {
+
+            activeDataLabelStyle: {
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                textShadow: '0 0 3px #000000'
+            },
+            drillUpButton: {
+                relativeTo: 'spacingBox',
+                position: {
+                    x: 0,
+                    y: 60
+                }
+            }
+        }
+    });
+});
      
 </script>
 

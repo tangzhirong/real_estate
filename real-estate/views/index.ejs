@@ -10,26 +10,45 @@
      <%- include('header'); %>
      <div class="main-content">
         <%- include('blockList'); %>
+        <%- include('areaMap'); %>
         <%- include('indexGraph'); %>
-        
         <!--%- include('signModal'); %-->
      </div>
+     <footer>
+            2016 &copy; 北京邮电大学网研院宽带网中心
+      </footer>
      <script type="text/javascript" src="/javascripts/widget/areaMap.js"></script>
      <script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
   </body>
 </html>
 <script type="text/javascript">
     $(document).ready(function(){
+      // $.ajax({
+      //                type: "GET",
+      //                url: "http://10.108.107.43:9998/getDistrict?city="+"北京",
+      //                dataType: "json",
+      //                success: function(data){
+      //                 alert("type:"+typeof(data));
+      //                 // for(var i=0;i<data.businessList.length;i++){
+
+      //                 //         var business_li = $("<li data-value="+data.businessList[i]+" class="item bitem">"+data.businessList[i]+"</li>");
+      //                 //         $(this).find('ol').append(business_li);
+      //                 // }
+
+      //                },
+      //                error:function(msg){
+      //                  console.log(msg);
+      //                }
+      //     });
 
       $.ajax({
                      type: "GET",
-                     url: "/getAllBlocks",
+                     url: "/getAllBlocks?last_index="+5,
                      dataType: "json",
                      success: function(data){
-                      $('.blockList .b-hd1_i').text(data.blocklist.length);
+                      $('.blockList .b-hd1_i').text('该市所有的');
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
-
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
 
                                     $('.b-content').append(block_item);
                              }
@@ -39,68 +58,283 @@
                      }
           });
 
-         //  var areaMap =  $("#dituContent").areaMap({
-         //        level:'province'
-         //  });
-         //  areaMap.init();
-         //  var overlay = areaMap.heatmap();
+           var areaMap =  $("#dituContent").areaMap({
+                 level:'province'
+           });
+           areaMap.init();
+           // var overlay = areaMap.heatmap();
 
-         //  $('.li-item').on('click',function(){
-         //    $(this).children().addClass('fa fa-check');
-         //    $(this).siblings().each(function(){
-         //        $(this).children().removeClass('fa fa-check');
-         //    });
-         //    var heatmap_type = $(this).data('val');
-         //    areaMap.heatmap_type = heatmap_type;
-         //    map.removeOverlay(overlay);
-         //    overlay = areaMap.heatmap();
+           //标注小区测试
+           //var testarray = [{"lng":116.418261,"lat":39.921984},{"lng":116.423332,"lat":39.916532}];
+           //areaMap.updateMarker(testarray);
 
-         //   areaMap.init();
+           $('.li-item').on('click',function(){
+             $(this).children().addClass('fa fa-check');
+             $(this).siblings().each(function(){
+                 $(this).children().removeClass('fa fa-check');
+             });
+             // var heatmap_type = $(this).data('val');
+             // areaMap.heatmap_type = heatmap_type;
+             // map.removeOverlay(overlay);
+             // overlay = areaMap.heatmap();
+
+            areaMap.init();
+          })
+
+           //scroll
+          var last_index = 5;
+          var scrollHandler = function(){
+          var viewH = $(this).height();
+          var contentH = $(this).get(0).scrollHeight;
+          var scrollTop =$(this).scrollTop();
+          if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
+            // 这里加载数据..
+            $.ajax({
+                         type: "GET",
+                         url: "/getAllBlocks?last_index="+last_index,
+                         dataType: "json",
+                         success: function(data){
+                          console.log(data.blocklist);
+                          // $('.blockList .b-hd1_i').text(data.blocklist.length);
+                                 for(var i=0;i<data.blocklist.length;i++){
+                                       var block_item = $('<li class="list-item" data-index='+i+'><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+                                        $('.b-content').append(block_item);
+                                 }
+                         },
+                         error:function(msg){
+                           console.log(msg);
+                         }
+              });
+             last_index+=5;
+
+            }
+    }
+    $(".b-container").scroll(scrollHandler);
 
 
+          //筛选集刷新地图
+          $('#b-hd3-submit').on('click',function(){
+            var address = [];
+            var pointArray = [];
+
+            $('.item-check').each(function(){
+                if($(this).attr("checked")){
+                   address.push($(this).siblings().children(".item-address").text());
+               }
+           })
+
+           var add = address.join(';');
+           console.log("需要标出的小区:"+address);
+           if(add!=''){
+              $.ajax({
+              type: "POST",
+              url: "/getBlockByAddress",
+              data:{'address':add},
+              traditional:true,
+              dataType: "json",
+              success: function(data){
+                  console.log('length:'+data.spiderGraph.length);
+                  for(var j=0;j<data.spiderGraph.length;j++){
+                    //console.log("经度: "+data.spiderGraph[j][0].lng);
+                    //console.log("维度："+data.spiderGraph[j][0].lat);
+                    var lng = data.spiderGraph[j][0].lng;
+                    var lat = data.spiderGraph[j][0].lat;
+                    var title = data.spiderGraph[j][0].title;
+                    var price = data.spiderGraph[j][0].unit_price;
+                    var house_num = data.spiderGraph[j][0].total_houses;
+                    var block_obj = {
+                      lng:lng,
+                      lat:lat,
+                      title:title,
+                      unit_price:price,
+                      house_num:house_num,
+                    }
+                    console.log(block_obj);
+                    if (lng!==null&&lat!==null) {
+                      // var point = {"lng":data.spiderGraph[j][0].lng,"lat":data.spiderGraph[j][0].lat};
+                      // pointArray.push(point);
+                      pointArray.push(block_obj);
+                    }else{
+                      alert('没有获取到'+title+'的经纬度值');
+                    }
+                  }
+                  areaMap.updateMarker(pointArray);
+              },
+              error:function(msg){
+                console.log(msg);
+              }
+            });
+           }
 
 
-         // })
+          })
 
           //条件筛选栏促发地图更新
+    $('.header .aside .li.li-district').hover(function(){
+       $(this).find('ol').addClass('show');
+     },function(){
+       $(this).find('ol').removeClass('show');
+     })
 
-    $('.header .aside .li').each(function(){
-        $(this).hover(function(){
-            $(this).find('ol').addClass('show');
-        },function(){
-            $(this).find('ol').removeClass('show');
-        })
-    })
+     $('.header .aside .li.li-business').hover(function(){
+      var district=$('.aside #district_name').text();
+       $(this).find('ol').addClass('show');
+       $.ajax({
+                     type: "GET",
+                     url: "/getBusinessByDistrict/"+district,
+                     dataType: "json",
+                     success: function(data){
+                      console.log(data.businessList);
+                      for(var i=0;i<data.businessList.length;i++){
+                              //console.log(data.businessList[i].name);
+                              var business_li = $("<li data-value="+data.businessList[i].name+" class='item bitem'>"+data.businessList[i].name+"</li>");
+                              $('.drop-list.blist').append(business_li);
+                      }
+                      //选择商圈
+                      $('.header .aside .drop-list .item.bitem').each(function(){
+                        $(this).on('click',function(){
+                           var business = $(this).data('value').toString();
+                           $('.b-container .b-content').children().each(function(){
+                            $(this).remove();
+                          })
+                           $('.aside #business_name').text(business);
+                           //新添加
+                          $(this).addClass('clicked');
+                          $(this).siblings().removeClass('clicked');
+                          //取消滚动加载事件
+                          $('.b-container').off('scroll',scrollHandler);
+                          //更新blocklist区域名和均价
+                          $('.i-card-name').text(business);
+
+                          //更新indexGraph
+                          console.log($('.aside #business_name').text());
+                          indexGraph.newUpdateData();
+
+                          //地图中心点汇聚
+                          areaMap.clear();
+                          //更新indexGraph标题
+                          $('.indexGraph .total span').text(business);
+                           $.ajax({
+                                       type: "GET",
+                                       url: "/getBusinessByName/"+business,
+                                       dataType: "json",
+                                       success: function(data){
+                                             areaMap.pointToDistrict(data.business[0],'district');
+                                       },
+                                       error:function(msg){
+                                         console.log(msg);
+                                       }
+                            });
+
+                          // $.ajax({
+                          //              type: "GET",
+                          //              url: "/getPriceByBusiness/"+business,
+                          //              dataType: "json",
+                          //              success: function(data){
+                          //                       $('.i-card-price span').text(data);
+                          //              },
+                          //              error:function(msg){
+                          //                console.log(msg);
+                          //              }
+                          //   });
+
+                              $.ajax({
+                                       type: "GET",
+                                       url: "/getBlocksByBusiness/"+business,
+                                       dataType: "json",
+                                       success: function(data){
+                                        console.log(data.blocklist.length);
+                                                $('.blockList .b-hd1_i').text(data.blocklist.length);
+                                               for(var i=0;i<data.blocklist.length;i++){
+                                                     var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info ">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+                                                      $('.b-content').append(block_item);
+                                               }
+                                       },
+                                       error:function(msg){
+                                         console.log(msg);
+                                       }
+                            });
+
+                        })
+                      })
+                                       },
+                                       error:function(msg){
+                                         console.log(msg);
+                                       }
+                            });
+
+                       },function(){
+                         $(this).find('ol').removeClass('show');
+                         $(this).find('ol').children().each(function(){
+                          $(this).remove();
+                         })
+                       })
+
+
+
 
      $('.build-time-desc').on('click',function(){
           var district=$('.aside #district_name').text();
-          console.log(district);
+
+          var business = $('.aside #business_name').text();
+
+
           if(district!='不限'){
             $.ajax({
                      type: "GET",
-                     url: "/getBlocksByBuild_time/"+district,   
+                     url: "/getBlocksByBuild_time/"+district,
                      dataType: "json",
                      success: function(data){
                               $('.blockList .b-hd1_i').text(data.blocklist.length);
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
-                         
-                                                                                                                                                                                                                                                                                                         
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
                                     $('.b-content').append(block_item);
-                             }    
+                             }
                      },
                      error:function(msg){
                        console.log(msg);
                      }
           });
         }
-        
+
       });
-      
-   
 
 
-    $('.header .aside .drop-list .item').each(function(){
+
+     // $('.build-time-desc').on('click',function(){
+     //      var district=$('.aside #district_name').text();
+     //      console.log(district);
+     //      if(district!='不限'){
+     //        $.ajax({
+     //                 type: "GET",
+     //                 url: "/getBlocksByBuild_time/"+district,
+     //                 dataType: "json",
+     //                 success: function(data){
+     //                          $('.blockList .b-hd1_i').text(data.blocklist.length);
+     //                         for(var i=0;i<data.blocklist.length;i++){
+     //                               var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].price+'<span>/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+     //                                $('.b-content').append(block_item);
+     //                         }
+     //                 },
+     //                 error:function(msg){
+     //                   console.log(msg);
+     //                 }
+     //      });
+     //    }
+
+     //  });
+
+
+
+     //选择行政区
+    $('.header .aside .drop-list .item.ditem').each(function(){
       $(this).on('click',function(){
         var district = $(this).data('value').toString();
         $('.b-container .b-content').children().each(function(){
@@ -110,6 +344,28 @@
         //新添加
         $(this).addClass('clicked');
         $(this).siblings().removeClass('clicked');
+        //取消滚动加载事件
+        $('.b-container').off('scroll',scrollHandler);
+
+        //更新blocklist区域名和均价
+        $('.i-card-name').text(district);
+        // $.ajax({
+        //              type: "GET",
+        //              url: "/getPriceByDistrict/"+district,
+        //              dataType: "json",
+        //              success: function(data){
+        //                       $('.i-card-price span').text(data);
+        //              },
+        //              error:function(msg){
+        //                console.log(msg);
+        //              }
+        //   });
+
+        //地图中心点汇聚
+        areaMap.clear();
+        areaMap.pointToDistrict(district,'province');
+        //更新indexGraph标题
+        $('.indexGraph .total span').text(district);
         if(district!='不限'){
             $.ajax({
                      type: "GET",
@@ -118,7 +374,7 @@
                      success: function(data){
                               $('.blockList .b-hd1_i').text(data.blocklist.length);
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info ">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
 
 
                                     $('.b-content').append(block_item);
@@ -131,13 +387,12 @@
         }else{
           $.ajax({
                      type: "GET",
-                     url: "/getAllBlocks",
+                     url: "/getAllBlocks?last_index="+5,
                      dataType: "json",
                      success: function(data){
-                      $('.blockList .b-hd1_i').text(data.blocklist.length);
+                      $('.blockList .b-hd1_i').text('该市所有的');
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
-
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
 
                                     $('.b-content').append(block_item);
                              }
@@ -153,42 +408,64 @@
 /*我写的*/
     //按房龄升序找房
     $('.blockList .b-hd2 .s-desc').each(function(){
+
       $(this).on('click',function(){
-        //console.log('ssssss');
-        
-         
-     if(($(this).children(".asc").css("display")=="none")&&($(this).hasClass("on")==true)){
-    
-       $(this).children(".asc").show(); 
-       $(this).children(".desc").hide(); 
-            //如果元素为隐藏,则将它显现
-      }else{
+
+       var business = $('.aside #business_name').text();
       
-      $(this).children(".asc").hide();  
+      $(this).siblings().removeClass("on");
+      $('.blockList .b-hd2 .s-desc').each(function(){
+      $(this).children(".asc").hide();     //箭头的html文档中的类名写反了，没有改，asc表示向下的箭头
+      $(this).children(".desc").show();
+
+      })
+
+     if(($(this).children(".asc").css("display")=="none")&&($(this).hasClass("on")==true)){
+
+       $(this).children(".asc").show();
+       $(this).children(".desc").hide();
+            //如果元素为隐藏,则将它显现
+        var tag=$(this).data('val2');
+      }else{
+
+      $(this).children(".asc").hide();
       $(this).children(".desc").show();     //如果元素为显现,则将其隐藏
+       var tag=$(this).data('value');   //如果元素为显现,则将其隐藏
       }
 
-      $('.blockList .b-hd2 .s-desc').each(function(){
-          $(this).removeClass("on");
-        })
+
+      $(this).siblings().removeClass("on");
+
         $(this).addClass("on");
-        
-        var tag=$(this).data('value');
+
+
+
+        console.log("选择的blocklist类型是"+tag);
         //console.log(tag);
        $('.b-container .b-content').children().each(function(){
          $(this).remove();
        })
        var district = $('.aside #district_name').text();
-       if(tag=='age_asc'){
-        //console.log('ssssssaaaa');
+
+       if(tag=='age_desc'){
+
+        //onsole.log('ssssssaaaa');
+        //新添的降序排列
+       // $(this).data('value','age_desc');
+        //console.log('des');
+
+
+        console.log("进行房龄降序排序");
+
+
           $.ajax({
             type:"GET",
-            url:"/getBlocksByBuildAge/"+district,
+            url:"/getBlocksByBuildAge/"+district+"/"+business,     //递减的房龄即是递增的年份
             dataType:"json",
             success: function(data){
                               $('.blockList .b-hd1_i').text(data.blocklist.length);
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
 
 
                                     $('.b-content').append(block_item);
@@ -198,18 +475,18 @@
                        console.log(msg);
                      }
           })
-       }
-       //按房价升序排序
-       else if(tag=='price_asc'){
-         console.log('aaass');
+       }else if(tag=='price_desc'){
+         console.log("进行房价降序排序");
+         //新添的按房价降序找房
+         //$(this).data('value','price_desc');
           $.ajax({
             type:"GET",
-            url:"/getBlocksByUnitPrice/"+district,
+            url:"/getBlocksByBuildPriceDesc/"+district+"/"+business,   //递增的房龄即是递减的年份
             dataType:"json",
             success: function(data){
                               $('.blockList .b-hd1_i').text(data.blocklist.length);
                              for(var i=0;i<data.blocklist.length;i++){
-                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="http://image1.ljcdn.com/110000-inspection/27a99310-d12f-4a51-930a-c31eac8f2b15.JPG.116x116.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><p class="item-des"><span class="item-info">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>万/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
 
 
                                     $('.b-content').append(block_item);
@@ -219,14 +496,63 @@
                        console.log(msg);
                      }
           })
-        }//end else if(price_asc)
+        }else if(tag=='age_asc'){
+          //切换回按房龄升序
+          console.log("进行房龄升序排序");
+         // $(this).data('value','age_asc');
+          $.ajax({
+            type:"GET",
+            url:"/getBlocksByBuildAgeDesc/"+district+"/"+business,
+            dataType:"json",
+            success: function(data){
+                              $('.blockList .b-hd1_i').text(data.blocklist.length);
+                             for(var i=0;i<data.blocklist.length;i++){
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+                                    $('.b-content').append(block_item);
+                             }
+                     },
+                     error:function(msg){
+                       console.log(msg);
+                     }
+          })
+
+        }//end else if(age_des)
+        //按房价降序排列
+        else if(tag=="price_asc"){
+          console.log("进行房价升序排序");
+         // $(this).data('value','price_asc');
+          $.ajax({
+            type:"GET",
+            url:"/getBlocksByBuildPrice/"+district+"/"+business,
+            dataType:"json",
+            success: function(data){
+                              $('.blockList .b-hd1_i').text(data.blocklist.length);
+                             for(var i=0;i<data.blocklist.length;i++){
+                                   var block_item = $('<li class="list-item"><div class="item-picture"><img src="/images/block_default.jpg" ></div><div class="item-main"><p class="item-title">'+data.blocklist[i].title+'</p><input type="checkbox" class="item-check" value=""/><p class="item-des"><span class="item-info item-address">'+data.blocklist[i].address+'</span><span class="item-info">'+data.blocklist[i].build_type+'</span><span class="item-info">'+data.blocklist[i].build_time+'</span><span class="item-price">'+data.blocklist[i].unit_price+'<span>元/平方米</span></span> </p><p class="item-tag-wrap"><span class="item-tag-school item-extra">学区房</span><span class="item-tag-hospital item-extra">近医院</span></p></div></li>');
+
+
+                                    $('.b-content').append(block_item);
+                             }
+                     },
+                     error:function(msg){
+                       console.log(msg);
+                     }
+          })
+
+        }//end else if(price_dese)
       })
     })
 /*我写的*/
 
 //初始化图表
 var indexGraph = $("#graph-container").indexGraph();
+indexGraph.testclosure();
 //indexGraph.newUpdateData();
+
+//初始化蜘蛛图
+//var spiderGraph = $("#spider-container").spiderGraph();
 })
 
 

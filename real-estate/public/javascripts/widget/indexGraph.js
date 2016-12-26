@@ -1,5 +1,7 @@
 (function($){
   $.fn.indexGraph = function(){
+    var me = this;
+
     var chart;
     var Data = {
       0: {
@@ -46,6 +48,7 @@
 
     //$(document).ready(function(){
       chart = Highcharts.chart('graph-container', {
+
         title: {
           style: {
             fontWeight: 'bold'
@@ -84,6 +87,7 @@
           data: []
         }]
       });
+      chart.showLoading();
       //previous version
       /*
         $("ol[name='price']").children().each(function(){
@@ -425,9 +429,9 @@
       */
 
       //区域选择器发生变化，更新数据
-      $("ol[class='drop-list']").children().each(function(){
+      $("ol[class='drop-list dlist']").children().each(function(){
         $(this).click(function(){
-          newUpdateData();
+          me.newUpdateData();
         })
       })
 
@@ -438,9 +442,12 @@
                     $(this).css({'color':'#4572A7','fontWeight':'bold'});
                     $(this).siblings().each(function(){
                       $(this).css({'color':'','fontWeight':''});
+
                     })
+
+
                      $(this).parent('.sl-value-list').data('price',val);
-                     newUpdateData();
+                     me.newUpdateData();
                   })
       })
       $("ol[name='age']").children().each(function(){
@@ -451,7 +458,7 @@
                       $(this).css({'color':'','fontWeight':''});
                     })
                      $(this).parent('.sl-value-list').data('age',val);
-                     newUpdateData();
+                     me.newUpdateData();
                   })
       })
       $("ol[name='plot_rate']").children().each(function(){
@@ -461,93 +468,28 @@
                     $(this).siblings().each(function(){
                       $(this).css({'color':'','fontWeight':''});
                     })
-                     $(this).parent('.sl-value-list').data('plotrate',val);
-                     newUpdateData();
+                    $(this).parent('.sl-value-list').data('plotrate',val);
+                    me.newUpdateData();
                   })
       })
+      $("ol[name='build_type']").children().each(function(){
+        var val = $(this).data('value');
+        $(this).on('click',function(){
+          $(this).css({'color':'#4572A7','fontWeight':'bold'});
+          $(this).siblings().each(function(){
+            $(this).css({'color':'','fontWeight':''});
+          })
+          $(this).parent('.sl-value-list').data('buildtype',val);
+          me.newUpdateData();
+        })
+      })
+
 
       //维度发生变化，更新数据
       $('.attribute-selector li').click(function(){
         $(this).addClass('chosen');
         $(this).siblings().removeClass('chosen');
         var order = $(this).attr("value");
-        /*
-        if (order === 0) {
-          $('.index-y-selector #avg_price').addClass('hidden');
-        }else{
-          $('.index-y-selector #avg_price').removeClass('hidden');
-        }
-      })
-    });
-
-    
-
-    // var updateData = function(order){
-    //   var xAxisTitle = Data[order].xAxisTitle;
-    //   chart.setTitle({text: Data[order].chartTitle});
-    //   chart.xAxis[0].setTitle({text: xAxisTitle});
-    //   chart.xAxis[0].setCategories(Data[order].categories);
-    //   chart.series[0].setData(Data[order].data);
-    //   chart.tooltip.options.formatter = function () {
-    //     return xAxisTitle + ": " + this.x + Data[order].valueSuffix + '<br/>' + this.series.name + ": " +this.y;
-    //   };
-
-    //重写此方法,通过ajax获取mysql中的数据
-      var updateData = function(order){
-              var xAxisTitle = Data[order].xAxisTitle;
-              chart.setTitle({text: Data[order].chartTitle});
-              chart.xAxis[0].setTitle({text: xAxisTitle});
-              chart.xAxis[0].setCategories(Data[order].categories);
-
-              var district = $('.aside #district_name').text();
-              console.log(district);
-
-              
-              if(order == 0){   //均价
-                $.ajax({
-                             type: "GET",
-                             url: "/getBlocksByPrice?district="+district,   
-                             dataType: "json",
-                             success: function(data){
-                                  chart.series[0].setData(data.count);
-                             },
-                             error:function(msg){
-                                  console.log(msg);
-                             }
-               });
-              }else if(order == 1){     //房龄
-                $.ajax({
-                             type: "GET",
-                             url: "/getBlocksByTime?district="+district,    
-                             dataType: "json",
-                             success: function(data){              
-                                  chart.series[0].setData(data.count);
-                             },
-                             error:function(msg){
-                                  console.log(msg);
-                             }
-               });
-              }else if(order == 2){    //容积率
-                  $.ajax({
-                             type: "GET",
-                             url: "/getBlocksByPlotRate?district="+district,   
-                             dataType: "json",
-                             success: function(data){                             
-                                  chart.series[0].setData(data.count);
-                             },
-                             error:function(msg){
-                                  console.log(msg);
-                             }
-               });
-              }
-      
-              //建筑类型、距商圈距离这两个比较难，交给你们了哈～_～
-              
-      chart.tooltip.options.formatter = function () {
-        return xAxisTitle + ": " + this.x + Data[order].valueSuffix + '<br/>' + this.series.name + ": " +this.y;
-      };
-
-        */
         $(this).parent(".attribute-selector").data('chosen',order);
         $('.indexGraph .attribute-filter').children().each(function(){
           if($(this).data('value')==order){
@@ -558,20 +500,25 @@
           }
         })
         //updateData(order);
-        newUpdateData();
+        me.newUpdateData();
       });
 
 
     //2016-12-03 重写updateData
-    function newUpdateData() {
+    me.newUpdateData = function() {
+      chart.showLoading();
       //获取区域名称 后期可能去掉
       var district = $('.aside #district_name').text();
       console.log("重写updateData，选择区域:"+district);
-      //获取选择的维度 0-房价,1-房龄,2-容积率
+      console.log(district);
+      //获取商圈名称
+      var business = $('.aside #business_name').text();
+      console.log("商圈名称:"+business);
+      //获取选择的维度 0-房价,1-房龄,2-容积率,3-建筑类型
       var attribute = $('.indexGraph .attribute-selector').data('chosen');
       console.log("重写updateData，选择维度:"+attribute);
       //获取维度区间
-      var age, price, plotrate;
+      var age, price, plotrate,build_type;
       var min_age,min_price,min_plotrate,max_age,max_price,max_plotrate;
       //根据选择的标准重写chart属性
       var chartType = $('.index-y-selector').data('chosen');
@@ -601,88 +548,122 @@
       chart.xAxis[0].setCategories(Data[attribute].categories);
       //ajax url
       var url="";
+      //判断是按照商圈更新图表还是按照区域更新图表
+      //if(business!=="商圈"){
+        //console.log("商圈商圈商圈");
+        //url = /getBlocksByBusiness/+business;
+        //sendAjaxRequest(url);
+      //}else{
+        console.log("区域区域区域");
+        switch (attribute) {
+          //选择房价
+          case 0:
+            age = $("ol[name='age']").data('age');
+            plotrate = $("ol[name='plot_rate']").data('plotrate');
+            build_type = $("ol[name='build_type']").data('buildtype');
+            console.log("建筑类型:"+build_type);
+            if (age==="") {
+              min_age = 0;
+              max_age = 0;
+            }else{
+              min_age = age.split("&")[0];
+              max_age = age.split("&")[1];
+            }
+            if (plotrate==="") {
+              min_plotrate = 0;
+              max_plotrate = 0;
+            }else{
+              min_plotrate = plotrate.split("&")[0];
+              max_plotrate = plotrate.split("&")[1];
+            }
+            console.log("build_type:"+build_type);
+            url = "/getBlocksByPrice?district="+district+"&business="+business+"&min_year="+min_age+"&max_year="+max_age+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate+"&build_type="+build_type;
+            sendAjaxRequest(url);
+            break;
+          //选择房龄
+          case 1:
+            price = $("ol[name='price']").data('price');
+            plotrate = $("ol[name='plot_rate']").data('plotrate');
+            build_type = $("ol[name='build_type']").data('buildtype');
+            if (price==="") {
+              min_price = 0;
+              max_price = 0;
+            }else{
+              min_price = price.split("&")[0];
+              max_price = price.split("&")[1];
+            }
+            if (plotrate==="") {
+              min_plotrate = 0;
+              max_plotrate = 0;
+            }else{
+              min_plotrate = plotrate.split("&")[0];
+              max_plotrate = plotrate.split("&")[1];
+            }
+            url = "/getBlocksByTime?district="+district+"&business="+business+"&min_price="+min_price+"&max_price="+max_price+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate+"&build_type="+build_type;
+            sendAjaxRequest(url);
+            break;
+          //选择容积率
+          case 2:
+            price = $("ol[name='price']").data('price');
+            age = $("ol[name='age']").data('age');
+            build_type = $("ol[name='build_type']").data('buildtype');
+            if (price==="") {
+              min_price = 0;
+              max_price = 0;
+            } else {
+              min_price = price.split("&")[0];
+              max_price = price.split("&")[1];
+            }
+            if (age==="") {
+              min_age = 0;
+              max_age = 0;
+            } else {
+              min_age = age.split("&")[0];
+              max_age = age.split("&")[1];
+            }
+            url = "/getBlocksByPlotRate?district="+district+"&business="+business+"&min_price="+min_price+"&max_price="+max_price+"&min_year="+min_age+"&max_year="+max_age+"&build_type="+build_type;
+            sendAjaxRequest(url);
+            break;
+          //选择建筑类型
+          case 3:
+            price = $("ol[name='price']").data('price');
+            age = $("ol[name='age']").data('age');
+            plotrate = $("ol[name='plot_rate']").data('plotrate');
+            if (price==="") {
+              min_price = 0;
+              max_price = 0;
+            }else{
+              min_price = price.split("&")[0];
+              max_price = price.split("&")[1];
+            }
+            if (age==="") {
+              min_age = 0;
+              max_age = 0;
+            }else{
+              min_age = age.split("&")[0];
+              max_age = age.split("&")[1];
+            }
+            if (plotrate==="") {
+              min_plotrate = 0;
+              max_plotrate = 0;
+            }else{
+              min_plotrate = plotrate.split("&")[0];
+              max_plotrate = plotrate.split("&")[1];
+            }
+            console.log(district);
+            url = "/getBlocksByBuildType?district="+district+"&business="+business+"&min_price="+min_price+"&max_price="+max_price+"&min_year="+min_age+"&max_year="+max_age+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate;
+            console.log(url);
+            sendAjaxRequest(url);
+            break;
+          case 4:
+            console.log("下个版本开发距商圈距离维度");
+            break;
+          default:
+            console.log("维度选择错误");
+            break;
+        }
+      //}
       //需要判断区域未选择或选择为不限
-      switch (attribute) {
-        //选择房价
-        case 0:
-          age = $("ol[name='age']").data('age');
-          plotrate = $("ol[name='plot_rate']").data('plotrate');
-          if (age===""&&plotrate==="") {
-            url = "/getBlocksByPrice?district="+district;
-          }else if (age===""&&plotrate!=="") {
-            min_plotrate = plotrate.split("&")[0];
-            max_plotrate = plotrate.split("&")[1];
-            url = "/getBlocksByPrice?district="+district+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate;
-          }else if (age!==""&&plotrate==="") {
-            min_age = age.split("&")[0];
-            max_age = age.split("&")[1];
-            url = "/getBlocksByPrice?district="+district+"&min_year="+min_age+"&max_year="+max_age;
-          }else {
-            min_age = age.split("&")[0];
-            max_age = age.split("&")[1];
-            min_plotrate = plotrate.split("&")[0];
-            max_plotrate = plotrate.split("&")[1];
-            url = "/getBlocksByPrice?district="+district+"&min_year="+min_age+"&max_year="+max_age+"&min_plotrate="+min_plotrate+"&max_plotrate"+max_plotrate;
-          }
-          sendAjaxRequest(url);
-          break;
-        //选择房龄
-        case 1:
-          price = $("ol[name='price']").data('price');
-          plotrate = $("ol[name='plot_rate']").data('plotrate');
-          if (price===""&&plotrate==="") {
-            url = "/getBlocksByTime?district="+district;
-          }else if (price===""&&plotrate!=="") {
-            min_plotrate = plotrate.split("&")[0];
-            max_plotrate = plotrate.split("&")[1];
-            url = "/getBlocksByTime?district="+district+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate;
-          }else if (price!==""&&plotrate==="") {
-            min_price = price.split("&")[0];
-            max_price = price.split("&")[1];
-            url = "/getBlocksByTime?district="+district+"&min_price="+min_price+"&max_price="+max_price;
-          }else {
-            min_price = price.split("&")[0];
-            max_price = price.split("&")[1];
-            min_plotrate = plotrate.split("&")[0];
-            max_plotrate = plotrate.split("&")[1];
-            url = "/getBlocksByTime?district="+district+"&min_price="+min_price+"&max_price="+max_price+"&min_plotrate="+min_plotrate+"&max_plotrate="+max_plotrate;
-          }
-          sendAjaxRequest(url);
-          break;
-        //选择容积率
-        case 2:
-          price = $("ol[name='price']").data('price');
-          age = $("ol[name='age']").data('age');
-          if (price===""&&age==="") {
-            url = "/getBlocksByPlotRate?district="+district;
-          }else if (price===""&&age!=="") {
-            min_age = age.split("&")[0];
-            max_age = age.split("&")[1];
-            url = "/getBlocksByPlotRate?district="+district+"&min_year="+min_age+"&max_year="+max_age;
-          }else if (price!==""&&age==="") {
-            min_price = price.split("&")[0];
-            max_price = price.split("&")[1];
-            url = "/getBlocksByPlotRate?district="+district+"&min_price="+min_price+"&max_price="+max_price;
-          }else {
-            min_price = price.split("&")[0];
-            max_price = price.split("&")[1];
-            min_age = age.split("&")[0];
-            max_age = age.split("&")[1];
-            url = "/getBlocksByPlotRate?district="+district+"&min_price="+min_price+"&max_price="+max_price+"&min_year="+min_age+"&max_year="+max_age;
-          }
-          sendAjaxRequest(url);
-          break;
-        case 3:
-          console.log("下个版本开发建筑类型维度");
-          break;
-        case 4:
-          console.log("下个版本开发距商圈距离维度");
-          break;
-        default:
-          console.log("维度选择错误");
-          break;
-      }
-
       //获取选择的指标，小区数量柱状图，平均价格折线图
     }
 
@@ -700,13 +681,34 @@
         url: url,
         dataType: "json",
         success: function(data){
+          chart.hideLoading();
           console.log(url);
-          if (url.startsWith("/getBlocksBy")) {
-            console.log("小区数量数组:"+data.count);
-            console.log("平均房价数组:"+data.avg_price);
-            chart.series[0].setData(data.count);
-            chart.series[1].setData(data.avg_price);
+          if (url.startsWith("/getBlocksByBusiness")) {
+            console.log("商圈url"+url);
+            console.log("商圈小区数量"+data.blocklist.length);
+          }else{
+            if (url.startsWith("/getBlocksBy")) {
+              console.log("bug url: "+url);
+              console.log("小区数量数组:"+data.count);
+              console.log("平均房价数组:"+data.avg_price);
+              var total_num = 0;
+              for(var i = 0;i<data.count.length;i++){
+                  total_num += data.count[i];
+              }
+              var subtitle = {
+                    text:"为您找到符合条件的<span style='color:red'>"+total_num+"</span>个小区",
+                    useHTML:true,
+                    style:{
+                        color:"#000",
+                        fontWeight:"bold"
+                    }
+                };
+              chart.setTitle(null,subtitle);     //设置副标题，第一个参数设置为null
+              chart.series[0].setData(data.count);
+              chart.series[1].setData(data.avg_price);
+            }
           }
+
           /*留作以后优化这个封装函数时使用
           if (url.startsWith("/getBlockListBy")) {
 
@@ -727,7 +729,7 @@
       var index = $(this).attr('value');
       $(this).parent('.index-y-selector').data('chosen',index);
       console.log("Y轴因子选择:"+index);
-      newUpdateData();
+      me.newUpdateData();
       console.log("根据选择指标更新数据完毕");
       switch (index) {
         case 0:
@@ -744,6 +746,12 @@
       }
     })
     chart.series[1].hide();
-    newUpdateData();
+    me.newUpdateData();
+
+    //闭包测试
+    me.testclosure = function () {
+      console.log("闭包测试");
+    }
+    return this;
   }
 })(jQuery);

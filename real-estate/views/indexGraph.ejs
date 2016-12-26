@@ -5,42 +5,36 @@
 <script src="/javascripts/source/exporting.js"></script>
 <script src="/javascripts/source/data.js"></script>
 <script src="javascripts/widget/indexGraph.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts-more.js"></script>
+<script src="javascripts/widget/spiderGraph.js"></script>
+
+
+
 
 <div class="indexGraph">
-  <ol class="attribute-selector" data-chosen='0'>
-    <li class="chosen" value="0" id="price">房价</li>
-    <li value="1">房龄</li>
-    <li value="2">容积率</li>
-    <li value="3">建筑类型</li>
-    <li value="4">距商圈距离</li>
-  </ol>
-
-  <ol class="index-y-selector" data-chosen='0'>
-    <li class="chosen" value="0" id="plot_count" >小区数量</li>
-    <li value="1" id="avg_price">小区均价</li>
-  </ol>
+<h2 class="total"><span></span>小区维度关联分析</h2>
 
   <div class="attribute-filter">
     <!--价格选项-->
-  	  <div class="selectorLine-price selectorLine hidden " data-value='0'>
-  	  	  <div class="sl-key">
-  	  	  	  <span>价格：</span>
-  	  	  </div>
-  	  	  <div class="sl-value">
-  	  	  	  <ol class="sl-value-list" name='price' data-price=''>
-  	  	  	  	<li data-value='0&10000'>0-1.0万</li>
-  	  	  	  	<li data-value='10000&15000'>1.0-1.5万</li>
-  	  	  	  	<li data-value='15000&20000'>1.5-2.0万</li>
-  	  	  	  	<li data-value='20000&25000'>2.0-2.5万</li>
-  	  	  	  	<li data-value='25000&30000'>2.5-3.0万</li>
-  	  	  	  	<li data-value='30000&35000'>3.0-3.5万</li>
-  	  	  	  	<li data-value='35000&40000'>3.5-4.0万</li>
-  	  	  	  	<li data-value='40000&45000'>4.0-4.5万</li>
-  	  	  	  	<li data-value='45000&50000'>4.5-5.0万</li>
-  	  	  	  	<li data-value='50000&1000000'>大于5.0万</li>
-  	  	  	  </ol>
-  	  	  </div>
-  	  </div>
+      <div class="selectorLine-price selectorLine hidden " data-value='0'>
+          <div class="sl-key">
+              <span>价格：</span>
+          </div>
+          <div class="sl-value">
+              <ol class="sl-value-list" name='price' data-price=''>
+                <li data-value='0&10000'>0-1.0万</li>
+                <li data-value='10000&15000'>1.0-1.5万</li>
+                <li data-value='15000&20000'>1.5-2.0万</li>
+                <li data-value='20000&25000'>2.0-2.5万</li>
+                <li data-value='25000&30000'>2.5-3.0万</li>
+                <li data-value='30000&35000'>3.0-3.5万</li>
+                <li data-value='35000&40000'>3.5-4.0万</li>
+                <li data-value='40000&45000'>4.0-4.5万</li>
+                <li data-value='45000&50000'>4.5-5.0万</li>
+                <li data-value='50000&1000000'>大于5.0万</li>
+              </ol>
+          </div>
+      </div>
       <!--房龄选项-->
       <div class="selectorLine-buildage selectorLine" data-value='1'>
           <div class="sl-key">
@@ -84,15 +78,16 @@
               <span>建筑类型：</span>
           </div>
           <div class="sl-value">
-              <ol class="sl-value-list" name='build_type'>
-                <li>板房</li>
-                <li>小高层</li>
-                <li>高层</li>
-                <li>公寓</li>
-                <li>联排别墅</li>
-                <li>双排别墅</li>
-                <li>花园洋房</li>
-              </ol>
+
+              <ol class="sl-value-list" name='build_type' data-buildtype=''>
+                <li data-value='板房'>板房</li>
+                <li data-value='小高层'>小高层</li>
+                <li data-value='高层'>高层</li>
+                <li data-value='公寓'>公寓</li>
+                <li data-value='联排别墅'>联排别墅</li>
+                <li data-value='双排别墅'>双排别墅</li>
+                <li data-value='花园洋房'>花园洋房</li>
+
           </div>
       </div>
       <!--距商圈距离选项-->
@@ -113,6 +108,73 @@
           </div>
       </div>
   </div>
+  <div class="selector-line">X轴
+  <ol class="attribute-selector" data-chosen='0'>
+    <li class="chosen" value="0" id="price">房价</li>
+    <li value="1">房龄</li>
+    <li value="2">容积率</li>
+    <li value="3">建筑类型</li>
+    <li value="4">距商圈距离</li>
+  </ol>
+  </div>
+
+  <div class="selector-line">Y轴
+<ol class="index-y-selector" data-chosen='0'>
+    <li class="chosen" value="0" id="plot_count" >小区数量</li>
+    <li value="1" id="avg_price">小区均价</li>
+  </ol>
+  </div>
+
+
+
 
   <div id="graph-container"></div>
+  <div id="spider-table">
+  <span id="clearBlockList">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                清空比较栏
+ </span>
+    <div class="ui-table-container">
+    <table class="ui-table"><!-- 可以在class中加入ui-table-inbox或ui-table-noborder分别适应不同的情况 -->
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>区域</th>
+                <th>地址</th>
+                <th>均价</th>
+                <th>栋数</th>
+                <th>户数</th>
+                <th>房型</th>
+                <th>建区时间</th>
+                <th>资产费</th>
+                <th>车位</th>
+                <th>绿化率</th>
+            </tr>
+        </thead><!-- 表头可选 -->
+        <tbody>
+            <!-- <tr>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+            </tr>
+            <tr class="ui-table-split">
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+                <td>Data</td>
+            </tr> -->
+            
+        </tbody>
+        
+    </table>
+</div>
+  </div>
+   <div id="spider-graph" ></div>
 </div>

@@ -1,0 +1,43 @@
+.indexMap{
+	position: absolute;
+	display: inline-block;
+	min-height: 735px;
+	min-width: 800px;
+}
+
+.mapControl{
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 20px;
+}
+
+.mapControl .li-item{
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    background-color: #fbfbfb;
+    border: 1px solid #555;
+    margin-right: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+}
+
+.mapControl .i-check{
+    outline-color: #53b371;
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    vertical-align: middle;
+    background: none;
+    outline: 1px solid #555;
+    margin-right: 5px;
+    margin-top: -2px;
+}

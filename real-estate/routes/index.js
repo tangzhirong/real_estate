@@ -4,9 +4,9 @@ var router = express.Router();
 var Block = require('../models/Block');
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: '链区网' });
-// });
+router.get('/beijing', function(req, res, next) {
+  res.render('index', { title: '链区网' });
+});
 
 router.get('/', function(req, res, next) {
   res.render('newIndex');
@@ -35,16 +35,24 @@ router.get('/getBlocksByTime',function(req,res,next){
 	Block.queryByTime(req,res,next);
 })
 
-/*我写的*/
-router.get('/getBlocksByBuildAge/:district',function(req,res,next){
-	//console.log(req.params.district);
-	Block.queryByBuildAge(req,res,next);
+router.get('/getBlocksByBuildType',function(req,res,next){
+  Block.queryByBuildType(req,res,next);
 })
 
-router.get('/getBlocksByUnitPrice/:district',function(req,res,next){
+
+router.get('/getBlocksByBuildAge/:district/:business',function(req,res,next){
+	Block.queryByBuildAge(req,res,next);
+})
+router.get('/getBlocksByBuildAgeDesc/:district/:business',function(req,res,next){
+
+	Block.queryByBuildAgeDesc(req,res,next);
+})
+router.get('/getBlocksByBuildPrice/:district/:business',function(req,res,next){
 	Block.queryByBuildPrice(req,res,next);
 })
-/*我写的*/
+router.get('/getBlocksByBuildPriceDesc/:district/:business',function(req,res,next){
+	Block.queryByBuildPriceDesc(req,res,next);
+})
 
 router.get('/getBlockListByTime',function(req,res,next){
 	Block.queryBlocksByTime(req,res,next);
@@ -62,4 +70,24 @@ router.get('/getBlocksByPriceAll',function(req,res,next){
   Block.queryByPriceAll(req,res,next);
 })
 
+router.post('/getBlockByAddress',function(req,res,next){
+	 console.log("55555555555555555"+req.body.address);
+    Block.queryByAddress(req,res,next);
+})
+
+router.get('/getBusinessByDistrict/:district',function(req,res,next){
+    Block.queryBusinessByDistrict(req,res,next);
+})
+
+router.get('/getBlocksByBusiness/:business',function(req,res,next){
+    Block.queryBlocksByBusiness(req,res,next);
+})
+
+router.get('/getBusinessByName/:business',function(req,res,next){
+    Block.queryBusinessByName(req,res,next);
+})
+
+// router.get('/test',function(req,res,next){
+// 	Block.test(req,res,next);
+// })
 module.exports = router;

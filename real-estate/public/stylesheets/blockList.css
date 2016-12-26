@@ -48,6 +48,8 @@
 
 
 .b-hd2 ol li{
+    font-size: 14px;
+    padding-left: 4px;
     float: left;
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;
@@ -70,6 +72,14 @@
 	margin:0;
 }
 
+#b-hd3-submit{
+    /*margin-left: 260px;*/
+    position: absolute;
+    right: 23px;
+    bottom: 20px;
+    height: 30px;
+    text-align: center;
+}
 
 .b-hd3 .i-card{
     overflow: hidden;
@@ -79,7 +89,7 @@
 }
 
 .b-hd3 .i-card li{
-    float: left;
+    /*float: left;*/
     width: 140px;
     margin-right: 16px;
     height: 22px;
@@ -175,6 +185,7 @@
 
 /*小区标题*/
 .item-title{
+    padding-top: 10px;
     font-size: 20px;
     font-weight: bold;
     color: #262626;
@@ -219,11 +230,37 @@
 .item-tag-traffic{
     color: #42d2fd;
 }
+.item-tag-wrap{
+    margin-top: -11px;
+}
+/*checkbox选框*/
+.item-check{
+    position: absolute;
+    right: 40px;
+    top: 20px;
+}
 
 
-
-
-
+.btn_compare {
+  background: #53b371;
+    width: 127px;
+    height: 55px;
+    float: right;
+    border: 0;
+    display: block;
+    border-radius: 0 2px 2px 0;
+    position: absolute;
+    right: -1px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}
 
 
 

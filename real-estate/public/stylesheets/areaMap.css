@@ -2,15 +2,15 @@
 	position: absolute;
 	margin-left: 460px;
 	display: inline-block;
-	min-height: 658px;
-	min-width: 1050px;
+	min-height: 667px;
+	min-width: 1060px;
 }
 
 .mapControl{
     position: absolute;
     z-index: 2;
     right: 0;
-    top: 20px;
+    top: 80px;
 }
 
 .mapControl .li-item{

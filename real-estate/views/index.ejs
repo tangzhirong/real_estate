@@ -3,7 +3,7 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/stylesheets/font-awesome/css/font-awesome.min.css' />
+    <link rel='stylesheet' href='/bower_components/font-awesome/css/font-awesome.min.css' />
     <script type="text/javascript" src="/javascripts/source/jquery.min.js"></script>
   </head>
   <body>
@@ -23,24 +23,6 @@
 </html>
 <script type="text/javascript">
     $(document).ready(function(){
-      // $.ajax({
-      //                type: "GET",
-      //                url: "http://10.108.107.43:9998/getDistrict?city="+"北京",
-      //                dataType: "json",
-      //                success: function(data){
-      //                 alert("type:"+typeof(data));
-      //                 // for(var i=0;i<data.businessList.length;i++){
-
-      //                 //         var business_li = $("<li data-value="+data.businessList[i]+" class="item bitem">"+data.businessList[i]+"</li>");
-      //                 //         $(this).find('ol').append(business_li);
-      //                 // }
-
-      //                },
-      //                error:function(msg){
-      //                  console.log(msg);
-      //                }
-      //     });
-
       $.ajax({
                      type: "GET",
                      url: "/getAllBlocks?last_index="+5,
@@ -554,10 +536,5 @@ indexGraph.testclosure();
 //初始化蜘蛛图
 //var spiderGraph = $("#spider-container").spiderGraph();
 })
-
-
-
-
-
 
 </script>

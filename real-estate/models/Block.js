@@ -9,26 +9,20 @@ var pool  = mysql.createPool($conf.mysql);
 module.exports = {
 
 	queryByBuildAge:function(req,res,next){
-		var district =  decodeURI(req.params.district); // 为了拼凑正确的sql语句，这里要转下整数
+		var district =  decodeURI(req.params.district); 
 		var business =  decodeURI(req.params.business);
 		if(business=='商圈'){
 			pool.getConnection(function(err, connection) {
 			connection.query($sql.queryByBuildAge, district, function(err, result) {
-				//console.log(result);
 				res.send({blocklist:result});
-				// jsonWrite(res, result);
 				connection.release();
-
 				});
 			});
 		}else{
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryBlocksByBusiness_BuildAge, business, function(err, result) {
-				//console.log(result);
+			connection.query($sql.queryBlocksByBusiness_BuildAge, business, function(err, result) {				
 				res.send({blocklist:result});
-				// jsonWrite(res, result);
 				connection.release();
-
 				});
 			});
 		}
@@ -40,22 +34,16 @@ module.exports = {
 		var business =  decodeURI(req.params.business);	
 		if(business=='商圈'){
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryByBuildAgeDesc, district, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryByBuildAgeDesc, district, function(err, result) {				
+				res.send({blocklist:result});			
 				connection.release();
-
 				});
 			});
 		}else{
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryBlocksByBusiness_BuildAgeDesc, business, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryBlocksByBusiness_BuildAgeDesc, business, function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 				});
 			});
 		}	
@@ -65,25 +53,19 @@ module.exports = {
 	queryByBuildPrice:function(req,res,next){
 		var district =  decodeURI(req.params.district); // 为了拼凑正确的sql语句，这里要转下整数
 		var business =  decodeURI(req.params.business);
-		//console.log(district);
+		
 		if(business=='商圈'){
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryByBuildPrice, district, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryByBuildPrice, district, function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 				});
 			});
 		}else{
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryBlocksByBusiness_BuildPrice, business, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryBlocksByBusiness_BuildPrice, business, function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 				});
 			});
 		}
@@ -92,26 +74,19 @@ module.exports = {
 
 	queryByBuildPriceDesc:function(req,res,next){
 		var district =  decodeURI(req.params.district); // 为了拼凑正确的sql语句，这里要转下整数
-		var business =  decodeURI(req.params.business);
-		//console.log(district);
+		var business =  decodeURI(req.params.business);		
 		if(business=='商圈'){
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryByBuildPriceDesc, district, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryByBuildPriceDesc, district, function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 				});
 			});
 		}else{
 			pool.getConnection(function(err, connection) {
-			connection.query($sql.queryBlocksByBusiness_BuildPriceDesc, business, function(err, result) {
-				//console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryBlocksByBusiness_BuildPriceDesc, business, function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 				});
 			});
 		}
@@ -122,12 +97,9 @@ module.exports = {
 		var last_index = parseInt(req.query.last_index);
 		console.log(last_index);
 		pool.getConnection(function(err, connection) {
-			connection.query($sql.queryAllBlocks, last_index,function(err, result) {
-				console.log(result);
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+			connection.query($sql.queryAllBlocks, last_index,function(err, result) {				
+				res.send({blocklist:result});				
 				connection.release();
-
 			});
 		});
 	},
@@ -135,10 +107,8 @@ module.exports = {
 		var district =  decodeURI(req.params.district); // 为了拼凑正确的sql语句，这里要转下整数
 		pool.getConnection(function(err, connection) {
 			connection.query($sql.queryByDistrict, district, function(err, result) {
-				res.send({blocklist:result});
-				// jsonWrite(res, result);
+				res.send({blocklist:result});				
 				connection.release();
-
 			});
 		});
 	},
@@ -146,8 +116,8 @@ module.exports = {
 		var district=decodeURI(req.params.district);
 		pool.getConnection(function(err,counnection) {
 			connection.query($sql.queryByBuild_time,district,function(err,result){
-                res.send({blocklist:result});
-                counnection.release();
+			             res.send({blocklist:result});
+			             counnection.release();
 			});
 		});
 	},
@@ -349,7 +319,7 @@ module.exports = {
 					avg_priceArr[i] = Math.ceil(priceArr[i]/num[i]);
 				}
 				console.log("avg_priceArr:"+avg_priceArr);
-        console.log("Block.js返回数组长度:"+result.length);
+        				console.log("Block.js返回数组长度:"+result.length);
 				res.send({count:num,avg_price:avg_priceArr});
 				connection.release();
 
@@ -619,17 +589,14 @@ module.exports = {
 						num[10]++;
 					}
 				}
-        console.log("queryByPriceAll:"+num);
+        				console.log("queryByPriceAll:"+num);
 				res.send({count:num});
 				connection.release();
 			});
 		});
 	},
 	queryByAddress:function(req,res,next) {
-
-		var address=decodeURI(req.body.address);
-
-		  console.log("333333333333333333333333"+address);
+		var address=decodeURI(req.body.address);		 
 		pool.getConnection(function(err,connection) {
 			var sql=$sql.queryByAddress;
 			var blocklist = [];
@@ -654,65 +621,34 @@ module.exports = {
 		});
 	},
 	queryBusinessByDistrict:function(req,res,next) {
-
 		var district='%'+decodeURI(req.params.district)+'%';
 		console.log('district:'+district);
 		pool.getConnection(function(err, connection) {
 			connection.query($sql.queryBusinessByDistrict,district,function(err, result) {
 				res.send({businessList:result});
 				connection.release();
-
 			});
 
 		});
 	},
 	queryBlocksByBusiness:function(req,res,next) {
-
 		var business=decodeURI(req.params.business);
-
 		pool.getConnection(function(err, connection) {
 			connection.query($sql.queryBlocksByBusiness,business,function(err, result) {				
 				res.send({blocklist:result});
 				connection.release();
-
 			});
 
 		});
 	},
 	queryBusinessByName:function(req,res,next) {
-
 		var business=decodeURI(req.params.business);
-
 		pool.getConnection(function(err, connection) {
-			connection.query($sql.queryBusinessByName,business,function(err, result) {
-				console.log('ssssssssss:'+result);
+			connection.query($sql.queryBusinessByName,business,function(err, result) {				
 				res.send({business:result});
 				connection.release();
-
 			});
 
 		});
-	},
-
-	// test:function(req,res,next){
-	// 		var arr = ['聚鑫园','新洲城市花园御景苑'];
-	// 		var blocklist = [];
-	// 		pool.getConnection(function(err, connection) {
-	// 			for(var i in arr){
-	// 				(function(i){
-	// 					connection.query($sql.queryByTitle,arr[i],function(err, result) {
-	// 						blocklist.push(result);
-
-	// 						if(i == arr.length-1){
-	// 							console.log(blocklist);
-	// 							res.send({blocklist:blocklist});
-	// 							connection.release();
-	// 						}
-	// 					});
-	// 				})(i);
-	// 			}
-	// 		});
-
-	// },
-
+	},	
 };

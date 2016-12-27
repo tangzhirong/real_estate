@@ -5,38 +5,14 @@ var block = {
 	queryByTitle:'select * from community where title = ?',
 	queryByAddress:'SELECT * FROM community where address=?',
 
-
-	queryByPlotRate1:'SELECT COUNT(1) AS num FROM community WHERE plot_rate<1.0 and district=?',
-	queryByPlotRate2:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=1.0 and plot_rate<1.5 and district=?',
-	queryByPlotRate3:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=1.5 and plot_rate<2.0 and district=?',
-	queryByPlotRate4:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=2.0 and plot_rate<2.5 and district=?',
-	queryByPlotRate5:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=2.5 and plot_rate<3.0 and district=?',
-	queryByPlotRate6:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=3.0 and plot_rate<3.5 and district=?',
-	queryByPlotRate7:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=3.5 and plot_rate<4.0 and district=?',
-	queryByPlotRate8:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=4.0 and plot_rate<4.5 and district=?',
-	queryByPlotRate9:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=4.5 and plot_rate<5.0 and district=?',
-	queryByPlotRate10:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=5.0 and district=?',
-	queryByPrice:'SELECT unit_price FROM  community WHERE district=?',
-	queryByTime1:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>2011 and district=?',
-	queryByTime2:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>=2006 and YEAR(build_time)<=2011 and district=?',
-	queryByTime3:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>=2001 and YEAR(build_time)<=2006 and district=?',
-	queryByTime4:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>=1996 and YEAR(build_time)<=2001 and district=?',
-	queryByTime5:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>=1991 and YEAR(build_time)<=1996 and district=?',
-	queryByTime6:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>=1986 and YEAR(build_time)<=1991 and district=?',
-	queryByTime7:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)<=1986 and district=?',
-
-
-
-	/*我写的*/
+	/************ 小区列表按维度排序 ****************/
 	queryByBuildAge:'select * from community where district=? order by build_time asc',
-    queryByBuildAgeDesc:'select * from community where district=? order by build_time desc',
+    	queryByBuildAgeDesc:'select * from community where district=? order by build_time desc',
 	queryByBuildPrice:'select * from community where district=? order by unit_price asc',
-
 	queryByBuildPriceDesc:'select * from community where district=? order by unit_price desc',
 
-
-
-
+	/********* 按不同维度进行进一步筛选 *************/
+	//plotrate
 	queryByPlotRate1:'SELECT COUNT(1) AS num FROM community WHERE plot_rate<1.0 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
 	queryByPlotRate2:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=1.0 and plot_rate<1.5 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
 	queryByPlotRate3:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=1.5 and plot_rate<2.0 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
@@ -47,7 +23,9 @@ var block = {
 	queryByPlotRate8:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=4.0 and plot_rate<4.5 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
 	queryByPlotRate9:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=4.5 and plot_rate<5.0 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
 	queryByPlotRate10:'SELECT COUNT(1) AS num FROM community WHERE plot_rate>=5.0 and district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
+	//price
 	queryByPrice:'SELECT unit_price FROM community WHERE district=? and YEAR(build_time) between ? and ? and plot_rate between ? and ?',
+	//time
 	queryByTime1:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>2011 and district=? and unit_price between ? and ?',
 	queryByTime2:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>2006 and YEAR(build_time)<=2011 and district=? and unit_price between ? and ? and plot_rate between ? and ?',
 	queryByTime3:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time)>2001 and YEAR(build_time)<=2006 and district=? and unit_price between ? and ? and plot_rate between ? and ?',
@@ -97,8 +75,8 @@ var block = {
 	queryBlocksByPlotRate:'SELECT * FROM community WHERE district=? and YEAR(build_time) between ? and ? and unit_price between ? and ?',
 	queryBlocksByPrice:'SELECT * from community where district=? and YEAR(build_time) between ? and ? and plot_rate between ? and ?',
 	queryBlocksByTime:'SELECT * FROM community WHERE district=? and unit_price between ? and ? and plot_rate between ? and ?',
-  //不同维度总计
-  //价钱维度
+  	//不同维度总计
+  	//价钱维度
 	queryByPriceAll:'SELECT unit_price FROM community WHERE YEAR(build_time) between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
 	//房龄维度
 	//queryByTimeAll:'SELECT COUNT(1) AS num FROM community WHERE YEAR(build_time) is not null and unit_price between ? and ? and plot_rate between ? and ?',
@@ -108,7 +86,7 @@ var block = {
 	queryByTimeAll4:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE YEAR(build_time)>1996 and YEAR(build_time)<=2001 and 2001 and unit_price between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
 	queryByTimeAll5:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE YEAR(build_time)>1991 and YEAR(build_time)<=1996 and unit_price between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
 	queryByTimeAll6:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE YEAR(build_time)>1986 and YEAR(build_time)<=1991 and unit_price between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
-  queryByTimeAll7:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE YEAR(build_time) <=1986 and unit_price between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
+  	queryByTimeAll7:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE YEAR(build_time) <=1986 and unit_price between ? and ? and plot_rate between ? and ? and build_type LIKE "%"?"%"',
 	//容积率维度
 	queryByPlotRateAll1:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE plot_rate<1.0 and YEAR(build_time) between ? and ? and unit_price between ? and ? and build_type LIKE "%"?"%"',
 	queryByPlotRateAll2:'SELECT COUNT(1) AS num, SUM(unit_price)/COUNT(1) AS avg_price FROM community WHERE plot_rate>=1.0 and plot_rate<1.5 and YEAR(build_time) between ? and ? and unit_price between ? and ? and build_type LIKE "%"?"%"',

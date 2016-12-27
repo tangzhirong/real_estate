@@ -87,7 +87,5 @@ router.get('/getBusinessByName/:business',function(req,res,next){
     Block.queryBusinessByName(req,res,next);
 })
 
-// router.get('/test',function(req,res,next){
-// 	Block.test(req,res,next);
-// })
+
 module.exports = router;

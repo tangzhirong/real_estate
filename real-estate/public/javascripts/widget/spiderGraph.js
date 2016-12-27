@@ -93,23 +93,6 @@ var options={
         y: 70,
         layout: 'vertical'
     },
-
-   //  series: [{
-   //      name: '和平大街皓月大路散盘',
-   //      data: [69,45,60,90,30],
-   //      pointPlacement: 'on'
-   //  },
-   //  {
-   //      name: '益寿里高层',
-   //      data: [57,36,98,23,12],
-   //      pointPlacement: 'on'
-   //  },
-   //  {
-   //      name: '精益公寓',
-   //      data: [66,89,34,60,70],
-   //      pointPlacement: 'on'
-   //  }
-   // ]
    series:[]
 }
 
@@ -130,26 +113,16 @@ var options={
             //console.log("spider graph:"+data.spiderGraph[0][0].title);
             //console.log("spider graph:"+data.spiderGraph[1][0].title);
             var oldBlocks = JSON.parse(window.localStorage.blocklist);
-       for(var j=0;j<data.spiderGraph.length;j++){
-            
+            for(var j=0;j<data.spiderGraph.length;j++){
+                  var block_info = data.spiderGraph[j][0];
+                  oldBlocks.push(block_info);
+            }
 
-        //     chart.series[j].update({
-        //     name:data.spiderGraph[j][0].title
-        // });
-
-            // chart.series[j].setData([parseFloat(data.spiderGraph[j][0].green_rate),(2016-age),parseFloat(data.spiderGraph[j][0].unit_price/1000),56,23]);
-
-          
-            var block_info = data.spiderGraph[j][0];
-            oldBlocks.push(block_info);
-
-         }
-
-         window.localStorage.blocklist = JSON.stringify(oldBlocks);
-         var blocksInfo = JSON.parse(window.localStorage.blocklist);
-         $('#spider-table .ui-table tbody').children().each(function(){
-          $(this).remove();
-         })
+           window.localStorage.blocklist = JSON.stringify(oldBlocks);
+           var blocksInfo = JSON.parse(window.localStorage.blocklist);
+           $('#spider-table .ui-table tbody').children().each(function(){
+            $(this).remove();
+           })
        
          for(var j=0;j<blocksInfo.length;j++){
                var date=new Date;
@@ -185,12 +158,6 @@ var options={
         }
       });
       }
-      
-   // }
-
-
-
-
 });
 
 });
